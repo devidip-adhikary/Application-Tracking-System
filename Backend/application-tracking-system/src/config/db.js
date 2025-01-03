@@ -1,22 +1,26 @@
-const { Pool } = require("pg");
-require("dotenv").config(); // Load environment variables from .env file
-
-// PostgreSQL connection pool
-const pool = new Pool({
-  user: process.env.DB_USER, // e.g., 'postgres'
-  host: process.env.DB_HOST, // e.g., 'localhost'
-  database: process.env.DB_NAME, // e.g., 'your_database'
-  password: process.env.DB_PASS, // e.g., 'your_password'
-  port: process.env.DB_PORT, // e.g., 5432
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
+// Initialize Sequelize
+const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: String(process.env.DB_SERVER),
+  dialect: 'mssql',
+  port: parseInt(process.env.DB_PORT) || 1433,
+  dialectOptions: {
+    options: {
+      enableArithAbort: true,
+      encrypt: process.env.DB_ENCRYPT === 'true', // Use encryption for Azure SQL Server
+      trustServerCertificate: true,
+    },
+  },
 });
 
 // Test the connection
-pool.query("SELECT NOW()", (err, res) => {
-  if (err) {
-    console.error("Database connection error:", err.stack);
-  } else {
-    console.log("Connected to database at:", res.rows[0].now);
+const connectToDatabase = async () => {
+  try {
+    await sequelize.authenticate();
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
   }
-});
+};
 
-module.exports = pool;
+module.exports = { sequelize, connectToDatabase };

@@ -1,22 +1,29 @@
-const express = require("express");
 require("dotenv").config();
+const cors = require("cors");
+const express = require("express");
+const bodyParser = require("body-parser");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swaggerDefinition");
+const { connectToDatabase } = require("./config/db");
+const routes = require("./routes/routes");
+
 const app = express();
-const pool = require("../config/db");
-const PORT = process.env.DB_PORT || 3000;
-const exampleRoutes = require("./routes/example");
+const port = process.env.PORT;
+app.use(cors());
 
-// Middleware to parse JSON
-app.use(express.json());
+// Middleware
+app.use(bodyParser.json());
 
-// Sample route
-app.get("/", (req, res) => {
-  res.send("Welcome to the Node.js Backend!");
-});
+// Swagger Docs
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Sample api
-app.use("/api", exampleRoutes);
+// Connect to the database
+connectToDatabase();
+
+// Routes
+app.use("/api", routes);
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running at PORT ${port}`);
 });

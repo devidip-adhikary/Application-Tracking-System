@@ -1,19 +1,12 @@
+import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
+import { AppProps } from "next/app";
 import Dashboard from "@/components/Dashboard/Dashboard";
-import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
-  title:
-    "TapzAdmin",
+  title: "PSS Admin",
   description: "This is an Application Tracker System",
 };
 
-export default function Home() {
-  return (
-    <>
-      <DefaultLayout>
-        <Dashboard />
-      </DefaultLayout>
-    </>
-  );
+export default function Home({ pageProps }: AppProps) {
+  return <Dashboard {...pageProps} />;
 }

@@ -6,9 +6,9 @@ import SelectGroupOne from "@/components/SelectGroup/SelectGroupOne";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Next.js Form Layout | TapzAdmin - Next.js Dashboard Template",
+  title: "Next.js Form Layout | PSS Admin - Next.js Dashboard Template",
   description:
-    "This is Next.js Form Layout page for TapzAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Form Layout page for PSS Admin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
 const FormLayout = () => {

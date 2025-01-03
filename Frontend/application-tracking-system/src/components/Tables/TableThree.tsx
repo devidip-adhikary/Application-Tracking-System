@@ -1,5 +1,5 @@
+"use client";
 import { Package } from "@/types/package";
-
 const packageData: Package[] = [
   {
     employee: "John Doe",

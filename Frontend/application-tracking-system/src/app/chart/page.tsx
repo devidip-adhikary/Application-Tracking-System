@@ -4,9 +4,9 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Chart | TapzAdmin - Next.js Dashboard Template",
+  title: "Next.js Chart | PSS Admin - Next.js Dashboard Template",
   description:
-    "This is Next.js Chart page for TapzAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Chart page for PSS Admin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
 const BasicChartPage: React.FC = () => {
