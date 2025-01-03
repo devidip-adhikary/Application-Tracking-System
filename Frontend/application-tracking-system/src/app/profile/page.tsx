@@ -1,21 +1,26 @@
+"use client";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Next.js Profile | PSS Admin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Profile page for PSS Admin - Next.js Tailwind CSS Admin Dashboard Template",
+type user = {
+  userName: string;
+  userMail: string;
 };
 
 const Profile = () => {
+  const [userDetails, setUserDetails] = useState<user>();
+
+  useEffect(() => {
+    let user: any = localStorage.getItem("user");
+    user = JSON.parse(user);
+    setUserDetails(user);
+  }, []);
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="Profile" />
-
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65">
             <Image
@@ -116,7 +121,7 @@ const Profile = () => {
             </div>
             <div className="mt-4">
               <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
-                Sarbajit Chakraborty
+                {userDetails?.userName}
               </h3>
               <p className="font-medium">Product Owner</p>
               <div className="mx-auto max-w-180">

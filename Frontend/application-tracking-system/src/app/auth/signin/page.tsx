@@ -26,8 +26,12 @@ const SignIn: React.FC = () => {
         "http://localhost:8000/api/auth/login",
         auth,
       );
-      const { token } = response.data;
+      const { name, email, token } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ userName: name, userMail: email }),
+      );
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       throw new Error(error.response?.data?.message || "Login failed");

@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import { redirect } from "next/navigation";
 
+type user = {
+  userName: string;
+  userMail: string;
+};
+
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState<user>();
+
+  useEffect(() => {
+    let user: any = localStorage.getItem("user");
+    user = JSON.parse(user);
+    setUserDetails(user);
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -21,7 +33,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Sarbajit C
+            {userDetails?.userName}
           </span>
           <span className="block text-xs">Product Owner</span>
         </span>

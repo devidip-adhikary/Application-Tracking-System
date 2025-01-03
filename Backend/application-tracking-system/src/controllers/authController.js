@@ -12,7 +12,13 @@ exports.login = async (req, res) => {
     }
     // const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
     const token = generateToken(user);
-    res.json({ token });
+    const response = {
+      name: user.name,
+      email: user.email,
+      token: token,
+    };
+    res.json(response);
+    // res.json({ token });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error: error.message });
   }
