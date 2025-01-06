@@ -37,6 +37,8 @@ router.get('/', authenticate, getUsers);
  *                 type: string
  *               password:
  *                 type: string
+ *               role:
+ *                 type: string
  *     responses:
  *       201:
  *         description: User created successfully
