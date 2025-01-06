@@ -1,7 +1,12 @@
 "use client";
 import React, { useState } from "react";
 
-const SelectGroupOne: React.FC = () => {
+interface selectGroup {
+  title: string;
+  options: {};
+}
+
+const SelectGroupOne: React.FC<selectGroup> = ({ title, options }: any) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
@@ -13,7 +18,7 @@ const SelectGroupOne: React.FC = () => {
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
         {" "}
-        Subject{" "}
+        {title}{" "}
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -28,17 +33,13 @@ const SelectGroupOne: React.FC = () => {
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select your subject
+            Select
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
-            USA
-          </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            UK
-          </option>
-          <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
-          </option>
+          {options.map((item: any, index: number) => (
+            <option value={item.id} className="text-body dark:text-bodydark">
+              {item.value}
+            </option>
+          ))}
         </select>
 
         <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
