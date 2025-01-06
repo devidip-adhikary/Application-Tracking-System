@@ -7,6 +7,10 @@ const Openings = sequelize.define('openings', {
     primaryKey: true,
     autoIncrement: true,
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   client_id: {
     type: DataTypes.INTEGER,
     references: {
@@ -22,6 +26,18 @@ const Openings = sequelize.define('openings', {
     },
   },
   job_description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  number_of_requiremnts: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  work_mode: {
     type: DataTypes.STRING,
     allowNull: false,
   },

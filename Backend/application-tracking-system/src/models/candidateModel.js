@@ -61,6 +61,14 @@ const Candidates = sequelize.define('candidates', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  resume: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lwd: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 },
   {
     sequelize,
