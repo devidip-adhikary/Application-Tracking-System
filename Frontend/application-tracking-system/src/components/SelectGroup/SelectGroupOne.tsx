@@ -1,17 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface selectGroup {
   title: string;
   options: {};
+  setSelectedValue?: any;
+  selectedValue?: string;
 }
 
-const SelectGroupOne: React.FC<selectGroup> = ({ title, options }: any) => {
+const SelectGroupOne: React.FC<selectGroup> = ({
+  title,
+  options,
+  setSelectedValue = () => {},
+  selectedValue = "",
+}: any) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
+  useEffect(() => {
+    setSelectedOption(selectedValue);
+    changeTextColor();
+  }, [selectedValue]);
+
   const changeTextColor = () => {
     setIsOptionSelected(true);
+  };
+
+  const handleChange = (e: any) => {
+    setSelectedOption(e.target.value);
+    changeTextColor();
+    setSelectedValue(e.target.value);
   };
 
   return (
@@ -24,10 +42,7 @@ const SelectGroupOne: React.FC<selectGroup> = ({ title, options }: any) => {
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
           value={selectedOption}
-          onChange={(e) => {
-            setSelectedOption(e.target.value);
-            changeTextColor();
-          }}
+          onChange={handleChange}
           className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             isOptionSelected ? "text-black dark:text-white" : ""
           }`}
@@ -36,7 +51,11 @@ const SelectGroupOne: React.FC<selectGroup> = ({ title, options }: any) => {
             Select
           </option>
           {options.map((item: any, index: number) => (
-            <option value={item.id} className="text-body dark:text-bodydark">
+            <option
+              key={index}
+              value={item.id}
+              className="text-body dark:text-bodydark"
+            >
               {item.value}
             </option>
           ))}

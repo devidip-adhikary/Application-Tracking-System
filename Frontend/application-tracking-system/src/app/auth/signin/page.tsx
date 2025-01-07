@@ -32,6 +32,7 @@ const SignIn: React.FC = () => {
         "user",
         JSON.stringify({ userName: name, userMail: email }),
       );
+      router.push("/");
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       throw new Error(error.response?.data?.message || "Login failed");
@@ -53,8 +54,6 @@ const SignIn: React.FC = () => {
 
     try {
       await login(auth);
-      console.log("on successfull login");
-      router.push("/");
     } catch (err: any) {
       setError(err.message);
     } finally {

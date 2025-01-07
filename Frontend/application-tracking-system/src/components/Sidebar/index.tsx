@@ -112,7 +112,13 @@ const menuGroups = [
           </svg>
         ),
         label: "Admin",
-        route: "/admin",
+        // route: "/admin",
+        route: "#",
+        children: [
+          { label: "Vendor", route: "/vendors" },
+          { label: "Client", route: "/clients" },
+          { label: "User", route: "/user" },
+        ],
       },
     ],
   },

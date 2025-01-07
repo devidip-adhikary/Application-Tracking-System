@@ -1,7 +1,10 @@
 "use client";
 import { Package } from "@/types/package";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 const packageData: Package[] = [
   {
+    id: 1,
     employee: "John Doe",
     phone: "+1 234 567 890",
     email: "john.doe@example.com",
@@ -11,6 +14,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 2,
     employee: "Jane Smith",
     phone: "+1 987 654 321",
     email: "jane.smith@example.com",
@@ -20,6 +24,7 @@ const packageData: Package[] = [
     status: "Inactive",
   },
   {
+    id: 3,
     employee: "Michael Brown",
     phone: "+1 555 234 567",
     email: "michael.brown@example.com",
@@ -29,6 +34,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 4,
     employee: "Emily Davis",
     phone: "+1 123 456 789",
     email: "emily.davis@example.com",
@@ -38,6 +44,7 @@ const packageData: Package[] = [
     status: "Inactive",
   },
   {
+    id: 5,
     employee: "Christopher Wilson",
     phone: "+1 222 333 444",
     email: "chris.wilson@example.com",
@@ -47,6 +54,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 6,
     employee: "Sophia Johnson",
     phone: "+1 444 555 666",
     email: "sophia.johnson@example.com",
@@ -56,6 +64,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 7,
     employee: "Liam Martinez",
     phone: "+1 777 888 999",
     email: "liam.martinez@example.com",
@@ -65,6 +74,7 @@ const packageData: Package[] = [
     status: "Inactive",
   },
   {
+    id: 8,
     employee: "Olivia Taylor",
     phone: "+1 666 555 444",
     email: "olivia.taylor@example.com",
@@ -74,6 +84,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 9,
     employee: "Ethan White",
     phone: "+1 123 321 456",
     email: "ethan.white@example.com",
@@ -83,6 +94,7 @@ const packageData: Package[] = [
     status: "Active",
   },
   {
+    id: 10,
     employee: "Mia Clark",
     phone: "+1 654 987 321",
     email: "mia.clark@example.com",
@@ -94,6 +106,15 @@ const packageData: Package[] = [
 ];
 
 const TableThree = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  const router = useRouter();
+  const handleNavigation = (id: number, mode: string) => {
+    router.push(`/candidate/${id}?mode=${mode}`);
+  };
+  if (!isMounted) return null;
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -167,7 +188,10 @@ const TableThree = () => {
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleNavigation(packageItem.id, "view")}
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -213,7 +237,10 @@ const TableThree = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleNavigation(packageItem.id, "edit")}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
