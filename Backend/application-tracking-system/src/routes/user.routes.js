@@ -53,7 +53,7 @@ router.post("/", authenticate, addUser);
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   put:
  *     summary: Update a user's information
  *     description: Edit user details such as name, email, role, and password.
@@ -179,7 +179,7 @@ router.get("/:id", authenticate, getUserById);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Mark a user as inactive
  *     description: Perform a soft delete on a user by setting their `isActive` status to false.
