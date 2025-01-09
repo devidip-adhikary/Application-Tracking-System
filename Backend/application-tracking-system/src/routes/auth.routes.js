@@ -17,8 +17,10 @@ const router = express.Router();
  *             properties:
  *               email:
  *                 type: string
+ *                 example: "devidip.adhikary@protivitiglobal.in"  # Default example email
  *               password:
  *                 type: string
+ *                 example: "pro@1234"  # Default example email
  *     responses:
  *       200:
  *         description: "Successfully logged in, token returned."

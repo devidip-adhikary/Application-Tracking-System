@@ -23,7 +23,7 @@ const Vendors = sequelize.define('vendors', {
     allowNull: false,
   },
   ph_no: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
 },

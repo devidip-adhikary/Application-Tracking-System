@@ -26,62 +26,63 @@ const Candidates = sequelize.define('candidates', {
     },
   },
   ph_no: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   current_company: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   YOE: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   RYOE: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   notice_period: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   cur_location: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   pref_location: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   current_ctc: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   expected_ctc: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   resume: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   lwd: {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  status:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 },
   {
     sequelize,
     timestamps: true, // Automatically adds `createdAt` and `updatedAt`
     freezeTableName: true,
-  },
-  {
-    indexes: [
-      {
-        unique: true,
-        fields: ['email', 'ph_no'], // Composite unique constraint
-      },
-    ],
-  });
+  },);
 
 module.exports = Candidates;
