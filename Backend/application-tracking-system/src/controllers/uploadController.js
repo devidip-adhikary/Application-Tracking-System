@@ -7,7 +7,7 @@ const Statuses = require('../models/statusModel');
 const TechStack = require('../models/techStackModel');
 
 const uploadMasterData = async (req, res) => {
-  const BATCH_SIZE = 500; // Number of rows to process per batch
+  const BATCH_SIZE = 1; // Number of rows to process per batch
   const models = {
     'Vendor': Vendors,
     'Status': Statuses,
@@ -21,16 +21,16 @@ const uploadMasterData = async (req, res) => {
 
     await sequelize.transaction(async (transaction) => {
       // Process Vendor, Status, Client, and Tech Stack first
-      // for (const [sheetName, Model] of Object.entries(models)) {
-      //   const worksheet = workbook.Sheets[sheetName];
-      //   if (!worksheet) continue; // Skip if sheet is not present
+      for (const [sheetName, Model] of Object.entries(models)) {
+        const worksheet = workbook.Sheets[sheetName];
+        if (!worksheet) continue; // Skip if sheet is not present
 
-      //   const jsonData = xlsx.utils.sheet_to_json(worksheet);
-      //   for (let i = 0; i < jsonData.length; i += BATCH_SIZE) {
-      //     const batch = jsonData.slice(i, i + BATCH_SIZE);
-      //     await Model.bulkCreate(batch, { transaction });
-      //   }
-      // }
+        const jsonData = xlsx.utils.sheet_to_json(worksheet);
+        for (let i = 0; i < jsonData.length; i += BATCH_SIZE) {
+          const batch = jsonData.slice(i, i + BATCH_SIZE);
+          await Model.bulkCreate(batch, { transaction });
+        }
+      }
 
       // Process Candidates separately to handle vendor ID mapping
       const candidateSheet = workbook.Sheets['Candidate'];
