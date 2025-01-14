@@ -1,5 +1,5 @@
-const express = require('express');
-const { login } = require('../controllers/authController');
+const express = require("express");
+const { login } = require("../controllers/authController");
 
 const router = express.Router();
 /**
@@ -7,6 +7,7 @@ const router = express.Router();
  * /api/auth/login:
  *   post:
  *     summary: "Login"
+ *     tags: [Auth]
  *     description: "Login to get a JWT token."
  *     requestBody:
  *       required: true
@@ -27,6 +28,6 @@ const router = express.Router();
  *       400:
  *         description: "Invalid credentials"
  */
-router.post('/login', login);
+router.post("/login", login);
 
 module.exports = router;

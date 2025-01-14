@@ -1,11 +1,11 @@
 "use client";
-import { Package } from "@/types/package";
+import { Candidates } from "@/types/candidate";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-const packageData: Package[] = [
+const packageData: Candidates[] = [
   {
     id: 1,
-    employee: "John Doe",
+    candidate: "John Doe",
     phone: "+1 234 567 890",
     email: "john.doe@example.com",
     tech: "React",
@@ -15,7 +15,7 @@ const packageData: Package[] = [
   },
   {
     id: 2,
-    employee: "Jane Smith",
+    candidate: "Jane Smith",
     phone: "+1 987 654 321",
     email: "jane.smith@example.com",
     tech: "Node.js",
@@ -25,7 +25,7 @@ const packageData: Package[] = [
   },
   {
     id: 3,
-    employee: "Michael Brown",
+    candidate: "Michael Brown",
     phone: "+1 555 234 567",
     email: "michael.brown@example.com",
     tech: "Python",
@@ -35,7 +35,7 @@ const packageData: Package[] = [
   },
   {
     id: 4,
-    employee: "Emily Davis",
+    candidate: "Emily Davis",
     phone: "+1 123 456 789",
     email: "emily.davis@example.com",
     tech: "Angular",
@@ -45,7 +45,7 @@ const packageData: Package[] = [
   },
   {
     id: 5,
-    employee: "Christopher Wilson",
+    candidate: "Christopher Wilson",
     phone: "+1 222 333 444",
     email: "chris.wilson@example.com",
     tech: "Vue.js",
@@ -55,7 +55,7 @@ const packageData: Package[] = [
   },
   {
     id: 6,
-    employee: "Sophia Johnson",
+    candidate: "Sophia Johnson",
     phone: "+1 444 555 666",
     email: "sophia.johnson@example.com",
     tech: "Java",
@@ -65,7 +65,7 @@ const packageData: Package[] = [
   },
   {
     id: 7,
-    employee: "Liam Martinez",
+    candidate: "Liam Martinez",
     phone: "+1 777 888 999",
     email: "liam.martinez@example.com",
     tech: "PHP",
@@ -75,7 +75,7 @@ const packageData: Package[] = [
   },
   {
     id: 8,
-    employee: "Olivia Taylor",
+    candidate: "Olivia Taylor",
     phone: "+1 666 555 444",
     email: "olivia.taylor@example.com",
     tech: "Ruby",
@@ -85,7 +85,7 @@ const packageData: Package[] = [
   },
   {
     id: 9,
-    employee: "Ethan White",
+    candidate: "Ethan White",
     phone: "+1 123 321 456",
     email: "ethan.white@example.com",
     tech: "C#",
@@ -95,7 +95,7 @@ const packageData: Package[] = [
   },
   {
     id: 10,
-    employee: "Mia Clark",
+    candidate: "Mia Clark",
     phone: "+1 654 987 321",
     email: "mia.clark@example.com",
     tech: "Swift",
@@ -122,7 +122,7 @@ const TableThree = () => {
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
-                Employee
+                Candidate
               </th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
                 Email
@@ -149,7 +149,7 @@ const TableThree = () => {
               <tr key={key}>
                 <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.employee}
+                    {packageItem.candidate}
                   </h5>
                   <p className="text-sm">${packageItem.phone}</p>
                 </td>

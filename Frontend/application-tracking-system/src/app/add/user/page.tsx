@@ -7,6 +7,7 @@ import { apiAction } from "@/utils/apiAction";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/common/Loader";
+import Notification from "@/components/common/Notification";
 
 const roleList = [
   {
@@ -32,6 +33,17 @@ const AddUser: React.FC = () => {
   });
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [notification, setNotification] = useState<any>(null);
+
+  const showNotification = (message: string, type: string) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+      // router.push("/user");
+    }, 3000); // Dismiss after 3 seconds
+  };
+
   const router = useRouter();
 
   useEffect(() => {
@@ -51,9 +63,13 @@ const AddUser: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (user.role === "") {
+      setError(true);
+      return;
+    }
     const token = localStorage.getItem("token") || undefined;
     try {
+      setLoading(true);
       const response = await apiAction({
         url: "http://localhost:8000/api/users",
         method: "POST",
@@ -61,18 +77,29 @@ const AddUser: React.FC = () => {
         body: JSON.stringify(user),
       });
       if (response) {
-        router.push("/user");
+        showNotification("Success! The user has been added.", "success");
+        // router.push("/user");
       }
-    } catch (error) {
+    } catch (error: any) {
+      showNotification(error.response.data, "error");
       console.error("Error fetching user data:", error);
     }
     setLoading(false);
+    setUser({
+      name: "",
+      email: "",
+      password: "",
+      role: "",
+    });
   };
 
   return loading ? (
     <Loader />
   ) : (
     <DefaultLayout>
+      {notification && (
+        <Notification message={notification.message} type={notification.type} />
+      )}
       <Breadcrumb pageName="Add User" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
@@ -82,7 +109,7 @@ const AddUser: React.FC = () => {
                 New User
               </h3>
             </div>
-            <form action="#">
+            <form onSubmit={handleSubmit}>
               <div className="p-6.5">
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
@@ -92,6 +119,7 @@ const AddUser: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Enter name"
+                      required
                       id="name"
                       onChange={handleChange}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -105,6 +133,7 @@ const AddUser: React.FC = () => {
                     <input
                       type="email"
                       placeholder="Enter email id"
+                      required
                       id="email"
                       onChange={handleChange}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -119,6 +148,7 @@ const AddUser: React.FC = () => {
                     <input
                       type="password"
                       placeholder="Enter password"
+                      required
                       id="password"
                       onChange={handleChange}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -130,12 +160,17 @@ const AddUser: React.FC = () => {
                       options={roleList}
                       setSelectedValue={setSelectedRole}
                     />
+                    {error && (
+                      <p className="mt-1 text-sm text-red-500">
+                        Please select a role
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <span className="float-right">
                   <button
-                    onClick={handleSubmit}
+                    type="submit"
                     className="mb-4 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
                   >
                     <span className="pe-2">Submit</span>

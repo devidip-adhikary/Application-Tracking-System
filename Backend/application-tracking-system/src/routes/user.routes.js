@@ -14,6 +14,7 @@ const router = express.Router();
  * /api/users:
  *   get:
  *     summary: "Get all users"
+ *     tags: [Users]
  *     description: "Retrieve a list of users"
  *     responses:
  *       200:

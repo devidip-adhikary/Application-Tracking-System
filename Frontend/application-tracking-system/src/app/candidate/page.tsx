@@ -2,11 +2,45 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import TableThree from "@/components/Tables/TableThree";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Candidates } from "@/types/candidate";
+import { apiAction } from "@/utils/apiAction";
 
 const Candidate: React.FC = () => {
   const router = useRouter();
+  const [candidateList, setCandidateList] = useState<Candidates[] | undefined>(
+    undefined,
+  );
+  const [loading, setLoading] = useState(false);
+  const headerData: any[] = [
+    "candidate",
+    "email",
+    "tech",
+    "client",
+    "vendor",
+    "status",
+  ];
+
+  useEffect(() => {
+    setLoading(true);
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: Candidates[] = await apiAction({
+        url: "http://localhost:8000/api/candidate",
+        method: "GET",
+        token: token,
+      });
+      setCandidateList([...data]);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+    setLoading(false);
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Candidate" />

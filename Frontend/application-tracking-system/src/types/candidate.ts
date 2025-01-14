@@ -1,6 +1,6 @@
-export type Package = {
+export type Candidates = {
   id:number, //Unique Id
-  employee: string; // Represents the Employee name
+  candidate: string; // Represents the Employee name
   phone: string;    // Phone number
   email: string;    // Email address
   tech: string;     // Technology expertise

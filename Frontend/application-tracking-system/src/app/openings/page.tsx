@@ -2,12 +2,67 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import TableTwo from "@/components/Tables/TableTwo";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiAction } from "@/utils/apiAction";
+import { Openings } from "@/types/opening";
+import Loader from "@/components/common/Loader";
 
-const Openings: React.FC = () => {
+const Opening: React.FC = () => {
   const router = useRouter();
-  return (
+  const [openingList, setOpeningList] = useState<Openings[] | undefined>(
+    undefined,
+  );
+  const [loading, setLoading] = useState(false);
+  const headerData: any[] = [
+    "name",
+    "client",
+    "tech_stack",
+    "job_description",
+    "location",
+    "number_of_requiremnts",
+    "work_mode",
+  ];
+
+  useEffect(() => {
+    setLoading(true);
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: Openings[] = await apiAction({
+        url: "http://localhost:8000/api/opening",
+        method: "GET",
+        token: token,
+      });
+      setOpeningList([...data]);
+    } catch (error) {
+      console.error("Error fetching opening data:", error);
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    setLoading(true);
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: Openings[] = await apiAction({
+        url: `http://localhost:8000/api/opening/${id}`,
+        method: "DELETE",
+        token: token,
+      });
+      fetchUser();
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching opening data:", error);
+    }
+  };
+
+  return loading ? (
+    <Loader />
+  ) : (
     <DefaultLayout>
       <Breadcrumb pageName="Openings" />
       <div>
@@ -36,7 +91,12 @@ const Openings: React.FC = () => {
 
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           <div className="col-span-12 xl:col-span-12">
-            <TableTwo />
+            <TableTwo
+              tableName="Openings"
+              data={openingList}
+              headerData={headerData}
+              deleteFunc={handleDelete}
+            />
           </div>
         </div>
       </div>
@@ -44,4 +104,4 @@ const Openings: React.FC = () => {
   );
 };
 
-export default Openings;
+export default Opening;

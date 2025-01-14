@@ -1,8 +1,3 @@
-export type BRAND = {
-  logo: string;
+export type Clients = {
   name: string;
-  visitors: number;
-  revenues: string;
-  sales: number;
-  conversion: number;
 };
