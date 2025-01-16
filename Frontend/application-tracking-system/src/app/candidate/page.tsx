@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Candidates } from "@/types/candidate";
 import { apiAction } from "@/utils/apiAction";
+import Loader from "@/components/common/Loader";
 
 const Candidate: React.FC = () => {
   const router = useRouter();
@@ -14,12 +15,14 @@ const Candidate: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const headerData: any[] = [
-    "candidate",
-    "email",
-    "tech",
-    "client",
-    "vendor",
-    "status",
+    { id: "Candidate", value: "name" },
+    { id: "Phone", value: "ph_no" },
+    { id: "Email", value: "email" },
+    { id: "Tech Stack", value: "tech" },
+    { id: "Client", value: "client" },
+    { id: "Vendor", value: "vendor" },
+    { id: "Status", value: "status_master" },
+    { id: "Action", value: "action" },
   ];
 
   useEffect(() => {
@@ -41,7 +44,10 @@ const Candidate: React.FC = () => {
     }
     setLoading(false);
   };
-  return (
+
+  return loading ? (
+    <Loader />
+  ) : (
     <DefaultLayout>
       <Breadcrumb pageName="Candidate" />
       <div>
@@ -69,7 +75,11 @@ const Candidate: React.FC = () => {
         </span>
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           <div className="col-span-12 xl:col-span-12">
-            <TableThree />
+            <TableThree
+              tableName="Candidate List"
+              data={candidateList}
+              headerData={headerData}
+            />
           </div>
         </div>
       </div>

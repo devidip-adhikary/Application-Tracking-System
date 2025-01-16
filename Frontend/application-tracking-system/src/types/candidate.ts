@@ -1,10 +1,19 @@
 export type Candidates = {
-  id:number, //Unique Id
-  candidate: string; // Represents the Employee name
-  phone: string;    // Phone number
-  email: string;    // Email address
-  tech: string;     // Technology expertise
-  client: string;   // Associated client
-  vendor: string;   // Vendor details
-  status: string;   // Current status (e.g., Active/Inactive)
+  id?: number, //Unique Id
+  name: string;
+  email: string;
+  ph_no: string;
+  current_company?: string;
+  YOE: string;
+  RYOE: string;
+  notice_period: string;
+  cur_location: string;
+  pref_location: string;
+  current_ctc: string;
+  expected_ctc: string;
+  lwd: Date | null;
+  opening?: number;
+  vendor_id: number;
+  status?: string;
+  resume?: File | null;
 };

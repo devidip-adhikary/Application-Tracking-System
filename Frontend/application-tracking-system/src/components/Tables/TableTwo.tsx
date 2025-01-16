@@ -75,7 +75,6 @@ const TableTwo = ({
                 <div className="break-words text-center">
                   {item !== "action" ? (
                     <p className="text-sm text-black dark:text-white">
-                      {console.log("cn", item, elem, elem[item]?.name)}
                       {elem[item]?.name || elem[item] || "-"}
                     </p>
                   ) : (

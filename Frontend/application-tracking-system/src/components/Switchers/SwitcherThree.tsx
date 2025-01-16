@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const SwitcherThree = () => {
+const SwitcherThree = ({ setValue = () => {} }: any) => {
   const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    setValue(enabled);
+  }, [enabled]);
 
   return (
     <div>

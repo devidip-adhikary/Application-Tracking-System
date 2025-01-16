@@ -159,6 +159,8 @@ const AddUser: React.FC = () => {
                       title="Role"
                       options={roleList}
                       setSelectedValue={setSelectedRole}
+                      displayName="value"
+                      required
                     />
                     {error && (
                       <p className="mt-1 text-sm text-red-500">

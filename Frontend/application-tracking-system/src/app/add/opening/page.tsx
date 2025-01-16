@@ -216,6 +216,7 @@ const AddOpenings: React.FC = () => {
                       options={clientList}
                       displayName="name"
                       setSelectedValue={setSelectedClient}
+                      required
                     />
                     {error && (
                       <p className="mt-1 text-sm text-red-500">
@@ -229,6 +230,7 @@ const AddOpenings: React.FC = () => {
                       options={techList}
                       displayName="name"
                       setSelectedValue={setSelectedTech}
+                      required
                     />
                     {error && (
                       <p className="mt-1 text-sm text-red-500">
@@ -245,6 +247,7 @@ const AddOpenings: React.FC = () => {
                       options={workModeList}
                       displayName="value"
                       setSelectedValue={setSelectedWorkMode}
+                      required
                     />
                     {error && (
                       <p className="mt-1 text-sm text-red-500">

@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
+const Vendors = require("./vendorsModel");
+const Statuses = require("./statusModel");
 
 const Candidates = sequelize.define(
   "candidates",
@@ -78,12 +80,10 @@ const Candidates = sequelize.define(
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: true,
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
+      references: {
+        model: "status",
+        key: "id",
+      },
     },
   },
   {
@@ -92,5 +92,9 @@ const Candidates = sequelize.define(
     freezeTableName: true,
   }
 );
+
+// Define associations
+Candidates.belongsTo(Vendors, { foreignKey: "vendor_id" }); // Candidates belongs to Vendors
+Candidates.belongsTo(Statuses, { foreignKey: "status" }); // Candidates belongs to Vendors
 
 module.exports = Candidates;

@@ -1,48 +1,190 @@
 "use client";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import Calendar from "@/components/Calender";
-import CheckboxTwo from "@/components/Checkboxes/CheckboxTwo";
+import Loader from "@/components/common/Loader";
+import Notification from "@/components/common/Notification";
 import DatePickerOne from "@/components/FormElements/DatePicker/DatePickerOne";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import SelectGroupOne from "@/components/SelectGroup/SelectGroupOne";
-import SelectGroupTwo from "@/components/SelectGroup/SelectGroupTwo";
 import SwitcherThree from "@/components/Switchers/SwitcherThree";
-import React from "react";
-
-const vendorList = [
-  {
-    id: 1,
-    value: "Vendor 1",
-  },
-  {
-    id: 2,
-    value: "Vendor 2",
-  },
-  {
-    id: 3,
-    value: "Vendor 3",
-  },
-];
-
-const techList = [
-  {
-    id: 1,
-    value: "Tech 1",
-  },
-  {
-    id: 2,
-    value: "Tech 2",
-  },
-  {
-    id: 3,
-    value: "Tech 3",
-  },
-];
+import { Candidates } from "@/types/candidate";
+import { Openings } from "@/types/opening";
+import { apiAction } from "@/utils/apiAction";
+import React, { useEffect, useState } from "react";
 
 const AddCandidate: React.FC = () => {
-  return (
+  const [candidate, setCandidate] = useState<Candidates>({
+    name: "",
+    email: "",
+    ph_no: "",
+    current_company: "",
+    YOE: "",
+    RYOE: "",
+    notice_period: "",
+    cur_location: "",
+    pref_location: "",
+    current_ctc: "",
+    expected_ctc: "",
+    lwd: null,
+    opening: 0,
+    vendor_id: 0,
+  });
+  const [openingList, setOpeningList] = useState<Openings[]>([]);
+  const [vendorList, setVendorList] = useState<[]>([]);
+  const [resume, setResume] = useState<File | null>(null);
+  const [selectedOpening, setSelectedOpening] = useState<string>("");
+  const [selectedVendor, setSelectedVendor] = useState<string>("");
+  const [selectedLWD, setSelectedLWD] = useState<string>("");
+  const [isServedNP, setIsServedNP] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState<any>(null);
+
+  const showNotification = (message: string, type: string) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchVendor();
+    fetchOpenings();
+  }, []);
+
+  useEffect(() => {
+    setCandidate((prevState) => ({
+      ...prevState,
+      opening: Number(selectedOpening),
+    }));
+  }, [selectedOpening]);
+
+  useEffect(() => {
+    setCandidate((prevState) => ({
+      ...prevState,
+      vendor_id: Number(selectedVendor),
+    }));
+  }, [selectedVendor]);
+
+  useEffect(() => {
+    setCandidate((prevState) => ({
+      ...prevState,
+      lwd: new Date(selectedLWD),
+    }));
+  }, [selectedLWD]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setResume(e.target.files[0]);
+    } else {
+      setResume(null);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setCandidate((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      candidate.opening === 0 ||
+      candidate.vendor_id === 0 ||
+      (isServedNP && candidate.lwd === null)
+    ) {
+      alert("Please fill the mandatory fields");
+      return;
+    }
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      setLoading(true);
+      const formData = new FormData();
+
+      Object.entries(candidate).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      });
+      if (resume) {
+        formData.append("resume", resume);
+      }
+      const response = await apiAction({
+        url: "http://localhost:8000/api/candidate",
+        method: "POST",
+        token: token,
+        body: formData,
+        cType: "multipart/form-data",
+      });
+      if (response) {
+        showNotification("Success! The candidate has been added.", "success");
+      }
+    } catch (error: any) {
+      showNotification(error.response.data, "error");
+      console.error("Error creating candidate data:", error);
+    }
+    setLoading(false);
+    setCandidate({
+      name: "",
+      email: "",
+      ph_no: "",
+      current_company: "",
+      YOE: "",
+      RYOE: "",
+      notice_period: "",
+      cur_location: "",
+      pref_location: "",
+      current_ctc: "",
+      expected_ctc: "",
+      lwd: new Date(),
+      opening: 0,
+      vendor_id: 0,
+    });
+  };
+
+  const fetchVendor = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: [] = await apiAction({
+        url: "http://localhost:8000/api/vendor",
+        method: "GET",
+        token: token,
+      });
+      setVendorList([...data]);
+    } catch (error) {
+      console.error("Error fetching vendor data:", error);
+    }
+    setLoading(false);
+  };
+
+  const fetchOpenings = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: [] = await apiAction({
+        url: "http://localhost:8000/api/opening",
+        method: "GET",
+        token: token,
+      });
+      setOpeningList([...data]);
+    } catch (error) {
+      console.error("Error fetching vendor data:", error);
+    }
+    setLoading(false);
+  };
+
+  return loading ? (
+    <Loader />
+  ) : (
     <div>
       <DefaultLayout>
+        {notification && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+          />
+        )}
         <Breadcrumb pageName="Add Candidate" />
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
           <div className="flex flex-col gap-9">
@@ -52,7 +194,7 @@ const AddCandidate: React.FC = () => {
                   New Candidate
                 </h3>
               </div>
-              <form action="#">
+              <form onSubmit={handleSubmit}>
                 <div className="p-2">
                   <div className="flex flex-col place-items-center gap-6 p-6.5 xl:flex-row">
                     <div className="xl:w-1/9 w-full">
@@ -97,23 +239,25 @@ const AddCandidate: React.FC = () => {
                 <div className="p-6.5">
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        First name <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter first name"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      <SelectGroupOne
+                        title="Opening"
+                        options={openingList}
+                        displayName="name"
+                        required
+                        setSelectedValue={setSelectedOpening}
                       />
                     </div>
 
                     <div className="w-full xl:w-1/2">
                       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Last name <span className="text-meta-1">*</span>
+                        Name <span className="text-meta-1">*</span>
                       </label>
                       <input
                         type="text"
-                        placeholder="Enter last name"
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter full name"
+                        id="name"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -126,7 +270,10 @@ const AddCandidate: React.FC = () => {
                         </label>
                         <input
                           type="email"
+                          onChange={handleChange}
+                          required
                           placeholder="Enter email address"
+                          id="email"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </div>
@@ -138,17 +285,36 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter phone number"
+                        id="ph_no"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
                   </div>
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
-                      <SelectGroupOne title="Vendor" options={vendorList} />
+                      <SelectGroupOne
+                        title="Vendor"
+                        options={vendorList}
+                        displayName="name"
+                        required
+                        setSelectedValue={setSelectedVendor}
+                      />
                     </div>
                     <div className="w-full xl:w-1/2">
-                      <SelectGroupOne title="Tech Stack" options={techList} />
+                      <div>
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Upload Resume
+                        </label>
+                        <input
+                          type="file"
+                          onChange={handleFileChange}
+                          id="resume"
+                          className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -159,7 +325,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Current Company"
+                        id="current_company"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -170,37 +339,30 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Notice Period"
+                        id="notice_period"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
                   </div>
 
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="mt-2 w-full xl:w-1/4">
+                    <div className="mt-2 w-full xl:w-1/2">
                       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                         Served NP? <span className="text-meta-1">*</span>
                       </label>
-                      <SwitcherThree />
+                      <SwitcherThree setValue={setIsServedNP} />
                     </div>
-
                     <div className="w-full xl:w-1/2">
-                      <DatePickerOne />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <div>
-                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                          Upload Resume
-                        </label>
-                        <input
-                          type="file"
-                          className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                        />
-                      </div>
+                      <DatePickerOne
+                        name="LWD"
+                        setValue={setSelectedLWD}
+                        isDisabled={isServedNP}
+                      />
                     </div>
                   </div>
-
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
@@ -209,7 +371,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Years of Experience"
+                        id="YOE"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -221,7 +386,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Relevent Years of Experience"
+                        id="RYOE"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -234,7 +402,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Current Location"
+                        id="cur_location"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -246,7 +417,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Relevent Years of Experience"
+                        id="pref_location"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -259,7 +433,10 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Current Location"
+                        id="current_ctc"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
@@ -270,14 +447,20 @@ const AddCandidate: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        onChange={handleChange}
+                        required
                         placeholder="Enter Relevent Years of Experience"
+                        id="expected_ctc"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
                   </div>
 
                   <span className="float-right">
-                    <button className="mb-4 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                    <button
+                      type="submit"
+                      className="mb-4 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                    >
                       <span className="pe-2">Submit</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

@@ -7,6 +7,7 @@ interface selectGroup {
   setSelectedValue?: any;
   selectedValue?: string;
   displayName?: string;
+  required: boolean;
 }
 
 const SelectGroupOne: React.FC<selectGroup> = ({
@@ -15,6 +16,7 @@ const SelectGroupOne: React.FC<selectGroup> = ({
   setSelectedValue = () => {},
   selectedValue = "",
   displayName = "value",
+  required = false,
 }: any) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
@@ -36,9 +38,9 @@ const SelectGroupOne: React.FC<selectGroup> = ({
 
   return (
     <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">
+      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
         {" "}
-        {title}{" "}
+        {title} {required && <span className="text-meta-1">*</span>}
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
