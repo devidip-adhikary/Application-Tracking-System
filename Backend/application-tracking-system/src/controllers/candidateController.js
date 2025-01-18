@@ -1,4 +1,5 @@
 const Candidate = require("../models/candidateModel");
+const Openings = require("../models/openingModel");
 const OpeningVsCandidates = require("../models/openingsVsCandidatesModel");
 const Statuses = require("../models/statusModel");
 const Vendors = require("../models/vendorsModel");
@@ -16,6 +17,38 @@ const getCandidates = async (req, res) => {
       },
     });
     res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+const getCandidateById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await Candidate.findByPk(userId, {
+      include: [
+        { model: Vendors, required: true },
+        { model: Statuses, required: true },
+        {
+          model: OpeningVsCandidates,
+          as: "openings",
+          include: [
+            {
+              model: Openings,
+              required: true,
+            },
+          ],
+        },
+      ],
+      where: {
+        isActive: true,
+      },
+    });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
@@ -71,4 +104,4 @@ const addCandidate = async (req, res) => {
   }
 };
 
-module.exports = { getCandidates, addCandidate };
+module.exports = { getCandidates, getCandidateById, addCandidate };

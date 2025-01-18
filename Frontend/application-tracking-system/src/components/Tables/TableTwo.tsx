@@ -13,11 +13,16 @@ const TableTwo = ({
   const [tableHeader, setTableHeader] = useState<[]>();
   const router = useRouter();
   const contextData = useContext(HeaderContext);
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     if (data.length && headerData.length) {
+      let tempHeader = headerData;
+      if (currentUser.userRole === "viewer") {
+        tempHeader.pop();
+      }
       setTableData(data);
-      setTableHeader(headerData);
+      setTableHeader(tempHeader);
     }
   }, [data, headerData]);
 
@@ -77,7 +82,7 @@ const TableTwo = ({
                     <p className="text-sm text-black dark:text-white">
                       {elem[item]?.name || elem[item] || "-"}
                     </p>
-                  ) : (
+                  ) : currentUser.userRole !== "viewer" ? (
                     <>
                       <button
                         className="hover:text-primary"
@@ -124,7 +129,7 @@ const TableTwo = ({
                         </svg>
                       </button>
                     </>
-                  )}
+                  ) : null}
                 </div>
               </div>
             )),

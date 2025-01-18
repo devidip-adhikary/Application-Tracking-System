@@ -13,6 +13,7 @@ const Users: React.FC = () => {
   const [userList, setUserList] = useState<User[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const headerData: any[] = ["name", "email", "role", "action"];
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     setLoading(true);
@@ -56,28 +57,30 @@ const Users: React.FC = () => {
     <DefaultLayout>
       <Breadcrumb pageName="Users" />
       <div>
-        <span className="sm:ml-3">
-          <button
-            type="button"
-            className="float-right inline-flex w-max items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => router.push("/add/user")}
-          >
-            <svg
-              className="-ml-0.5 mb-1 mr-1.5 size-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-              data-slot="icon"
+        {currentUser.userRole !== "viewer" && (
+          <span className="sm:ml-3">
+            <button
+              type="button"
+              className="float-right inline-flex w-max items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => router.push("/add/user")}
             >
-              <path
-                fillRule="evenodd"
-                d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Add User
-          </button>
-        </span>
+              <svg
+                className="-ml-0.5 mb-1 mr-1.5 size-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+                data-slot="icon"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Add User
+            </button>
+          </span>
+        )}
 
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           <div className="col-span-12 xl:col-span-12">

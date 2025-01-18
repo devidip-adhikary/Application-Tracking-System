@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getCandidates,
   addCandidate,
+  getCandidateById,
 } = require("../controllers/candidateController");
 const authenticate = require("../middlewares/authenticate");
 const router = express.Router();
@@ -25,6 +26,50 @@ const upload = multer({ dest: "uploads/" });
  *       - bearerAuth: []  # This line ensures the route requires JWT authentication
  */
 router.get("/", authenticate, getCandidates);
+
+/**
+ * @swagger
+ * /api/candidate/{id}:
+ *   get:
+ *     summary: Retrieve a user by ID
+ *     description: Fetch a single user by their ID from the database.
+ *     tags: [Candidate]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user to retrieve
+ *     responses:
+ *       200:
+ *         description: A user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error fetching user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ */
+router.get("/:id", authenticate, getCandidateById);
 
 /**
  * @swagger

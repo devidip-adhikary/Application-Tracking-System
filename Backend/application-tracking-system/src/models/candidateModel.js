@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const Vendors = require("./vendorsModel");
 const Statuses = require("./statusModel");
+const OpeningVsCandidates = require("./openingsVsCandidatesModel");
 
 const Candidates = sequelize.define(
   "candidates",
@@ -96,5 +97,10 @@ const Candidates = sequelize.define(
 // Define associations
 Candidates.belongsTo(Vendors, { foreignKey: "vendor_id" }); // Candidates belongs to Vendors
 Candidates.belongsTo(Statuses, { foreignKey: "status" }); // Candidates belongs to Vendors
+
+Candidates.hasMany(OpeningVsCandidates, {
+  foreignKey: "candidate_id",
+  as: "openings",
+}); // New association
 
 module.exports = Candidates;
