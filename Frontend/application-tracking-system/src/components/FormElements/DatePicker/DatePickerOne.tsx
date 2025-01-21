@@ -6,6 +6,7 @@ const DatePickerOne = ({
   name,
   isDisabled = false,
   setValue = () => {},
+  value = "",
 }: any) => {
   useEffect(() => {
     // Init flatpickr
@@ -25,6 +26,16 @@ const DatePickerOne = ({
       },
     });
   }, []);
+
+  useEffect(() => {
+    flatpickr(".form-datepicker", {
+      defaultDate: value.length
+        ? typeof value === "string"
+          ? value.split("T")[0]
+          : value?.toISOString().split("T")[0]
+        : null,
+    });
+  }, [value]);
 
   return (
     <div>

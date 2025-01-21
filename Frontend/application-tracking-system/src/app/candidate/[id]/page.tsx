@@ -1,5 +1,4 @@
 "use client";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Loader from "@/components/common/Loader";
 import DatePickerOne from "@/components/FormElements/DatePicker/DatePickerOne";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
@@ -96,20 +95,20 @@ const CandidateByID: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      candidate.opening === 0 ||
-      candidate.vendor_id === 0 ||
-      (isServedNP && candidate.lwd === null)
-    ) {
-      alert("Please fill the mandatory fields");
-      return;
-    }
     const token = localStorage.getItem("token") || undefined;
+    const userObject: any = { ...candidate };
+    userObject["opening_id"] = userObject.openings[0].id;
+    const updatedObj = Object.fromEntries(
+      Object.entries(userObject).filter(
+        ([key]) =>
+          !["openings", "status_master", "vendor", "resume"].includes(key),
+      ),
+    );
     try {
       setLoading(true);
       const formData = new FormData();
 
-      Object.entries(candidate).forEach(([key, value]) => {
+      Object.entries(updatedObj).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           formData.append(key, value.toString());
         }
@@ -119,7 +118,7 @@ const CandidateByID: React.FC = () => {
       }
       const response = await apiAction({
         url: "http://localhost:8000/api/candidate",
-        method: "POST",
+        method: "PUT",
         token: token,
         body: formData,
         cType: "multipart/form-data",
@@ -154,11 +153,12 @@ const CandidateByID: React.FC = () => {
     const { id } = params;
     const token = localStorage.getItem("token") || undefined;
     try {
-      const data: Candidates = await apiAction({
+      const data: any = await apiAction({
         url: `http://localhost:8000/api/candidate/${id}`,
         method: "GET",
         token: token,
       });
+      data["opening"] = data.openings[0].opening_id;
       setCandidate(data);
     } catch (error) {
       console.error("Error fetching vendor data:", error);
@@ -196,6 +196,17 @@ const CandidateByID: React.FC = () => {
     setLoading(false);
   };
 
+  const downloadResume = (filePath: any) => {
+    // Adjust the file path to use forward slashes and ensure it points to the correct public URL
+    const url = filePath.replace(/\\/g, "/"); // Convert backslashes to forward slashes if needed
+    const link = document.createElement("a");
+    link.href = "http://localhost:8000/" + url;
+    link.download = ""; // The browser will determine the file name from the URL or content-disposition
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return loading ? (
     <Loader />
   ) : (
@@ -227,6 +238,7 @@ const CandidateByID: React.FC = () => {
                         displayName="name"
                         required
                         setSelectedValue={setSelectedOpening}
+                        selectedValue={candidate?.opening?.toString()}
                       />
                     </div>
 
@@ -286,6 +298,7 @@ const CandidateByID: React.FC = () => {
                         displayName="name"
                         required
                         setSelectedValue={setSelectedVendor}
+                        selectedValue={candidate.vendor_id.toString()}
                       />
                     </div>
                     <div className="w-full xl:w-1/2">
@@ -297,8 +310,23 @@ const CandidateByID: React.FC = () => {
                           type="file"
                           onChange={handleFileChange}
                           id="resume"
-                          className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                          className={`${candidate?.resume ? "w-99" : "w-full"} cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary`}
                         />
+                        {candidate?.resume && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="mx-2 inline size-6"
+                            onClick={() => downloadResume(candidate?.resume)}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -340,13 +368,17 @@ const CandidateByID: React.FC = () => {
                       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                         Served NP? <span className="text-meta-1">*</span>
                       </label>
-                      <SwitcherThree setValue={setIsServedNP} />
+                      <SwitcherThree
+                        setValue={setIsServedNP}
+                        checked={candidate.lwd !== null ? true : false}
+                      />
                     </div>
                     <div className="w-full xl:w-1/2">
                       <DatePickerOne
                         name="LWD"
                         setValue={setSelectedLWD}
                         isDisabled={isServedNP}
+                        value={candidate?.lwd || selectedLWD}
                       />
                     </div>
                   </div>

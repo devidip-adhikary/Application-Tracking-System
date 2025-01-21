@@ -3,6 +3,8 @@ const {
   getCandidates,
   addCandidate,
   getCandidateById,
+  editCandidate,
+  deleteCandidate,
 } = require("../controllers/candidateController");
 const authenticate = require("../middlewares/authenticate");
 const router = express.Router();
@@ -129,5 +131,152 @@ router.get("/:id", authenticate, getCandidateById);
  *         description: Bad request
  */
 router.post("/", upload.single("resume"), authenticate, addCandidate);
+
+/**
+ * @swagger
+ * /api/candidate:
+ *   put:
+ *     summary: Edit an existing candidate
+ *     description: Update the details of an existing candidate using their ID.
+ *     tags: [Candidate]
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: id
+ *         type: integer
+ *         required: true
+ *         description: ID of the candidate to be updated.
+ *       - in: formData
+ *         name: name
+ *         type: string
+ *         description: Name of the candidate.
+ *       - in: formData
+ *         name: email
+ *         type: string
+ *         description: Email address of the candidate.
+ *       - in: formData
+ *         name: ph_no
+ *         type: string
+ *         description: Phone number of the candidate.
+ *       - in: formData
+ *         name: current_company
+ *         type: string
+ *         description: Current company of the candidate.
+ *       - in: formData
+ *         name: YOE
+ *         type: integer
+ *         description: Years of experience of the candidate.
+ *       - in: formData
+ *         name: RYOE
+ *         type: integer
+ *         description: Relevant years of experience of the candidate.
+ *       - in: formData
+ *         name: notice_period
+ *         type: integer
+ *         description: Notice period of the candidate.
+ *       - in: formData
+ *         name: cur_location
+ *         type: string
+ *         description: Current location of the candidate.
+ *       - in: formData
+ *         name: pref_location
+ *         type: string
+ *         description: Preferred location of the candidate.
+ *       - in: formData
+ *         name: current_ctc
+ *         type: number
+ *         format: float
+ *         description: Current CTC of the candidate.
+ *       - in: formData
+ *         name: expected_ctc
+ *         type: number
+ *         format: float
+ *         description: Expected CTC of the candidate.
+ *       - in: formData
+ *         name: lwd
+ *         type: string
+ *         format: date
+ *         description: Last working day of the candidate.
+ *       - in: formData
+ *         name: opening
+ *         type: integer
+ *         description: Opening ID related to the candidate.
+ *       - in: formData
+ *         name: vendor_id
+ *         type: integer
+ *         description: Vendor ID associated with the candidate.
+ *       - in: formData
+ *         name: opening_id
+ *         type: integer
+ *         description: OpeningVsCandidates ID to be updated.
+ *       - in: formData
+ *         name: resume
+ *         type: file
+ *         description: Resume file of the candidate.
+ *     responses:
+ *       200:
+ *         description: Successfully updated the candidate.
+ *         schema:
+ *           $ref: '#/definitions/Candidate'
+ *       404:
+ *         description: Candidate not found.
+ *       500:
+ *         description: Error updating the candidate.
+ */
+router.put("/", upload.single("resume"), authenticate, editCandidate);
+
+/**
+ * @swagger
+ * /api/candidate:
+ *   delete:
+ *     summary: Delete an existing candidate
+ *     description: Soft delete an existing candidate by marking them as inactive.
+ *     tags: [Candidate]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID of the candidate to be deleted.
+ *                 example: 1
+ *               opening_id:
+ *                 type: integer
+ *                 description: ID of the opening related to the candidate.
+ *                 example: 10
+ *     responses:
+ *       200:
+ *         description: Candidate marked as inactive successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Candidate marked as inactive successfully
+ *       404:
+ *         description: Candidate not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Candidate not found
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: Server Error
+ */
+router.delete("/", authenticate, deleteCandidate);
 
 module.exports = router;

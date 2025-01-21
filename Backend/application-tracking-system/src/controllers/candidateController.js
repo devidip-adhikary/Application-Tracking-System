@@ -1,8 +1,11 @@
 const Candidate = require("../models/candidateModel");
+const Clients = require("../models/clientModel");
 const Openings = require("../models/openingModel");
 const OpeningVsCandidates = require("../models/openingsVsCandidatesModel");
 const Statuses = require("../models/statusModel");
+const TechStack = require("../models/techStackModel");
 const Vendors = require("../models/vendorsModel");
+const { Op } = require("sequelize");
 
 // Fetch all candidates
 const getCandidates = async (req, res) => {
@@ -11,6 +14,23 @@ const getCandidates = async (req, res) => {
       include: [
         { model: Vendors, required: true, attributes: ["name"] },
         { model: Statuses, required: true, attributes: ["name"] },
+        {
+          model: OpeningVsCandidates,
+          as: "openings",
+          include: [
+            {
+              model: Openings,
+              include: [
+                {
+                  model: Clients,
+                },
+                {
+                  model: TechStack,
+                },
+              ],
+            },
+          ],
+        },
       ],
       where: {
         isActive: true,
@@ -23,6 +43,7 @@ const getCandidates = async (req, res) => {
   }
 };
 
+// Fetch candidate by id
 const getCandidateById = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -55,6 +76,7 @@ const getCandidateById = async (req, res) => {
   }
 };
 
+// Add new candidate
 const addCandidate = async (req, res) => {
   try {
     const {
@@ -75,6 +97,23 @@ const addCandidate = async (req, res) => {
     } = req.body;
     const resume = req.file ? req.file.path : null;
 
+    const duplicate_candidate = await Candidate.findOne({
+      where: {
+        [Op.or]: [
+          { email: email },
+          { ph_no: ph_no },
+          {
+            [Op.and]: [
+              { name: name },
+              { current_company: current_company },
+              { current_ctc: current_ctc },
+              { cur_location: cur_location },
+            ],
+          },
+        ],
+      },
+    });
+
     const newUser = await Candidate.create({
       name,
       email,
@@ -90,18 +129,110 @@ const addCandidate = async (req, res) => {
       resume,
       lwd,
       vendor_id,
-      status: 1,
+      status: duplicate_candidate === null ? 1 : 14,
     });
-    const newOpeningVSCandidate = await OpeningVsCandidates.create({
+
+    await OpeningVsCandidates.create({
       opening_id: opening,
       candidate_id: newUser.id,
-      status_id: 1,
+      status_id: duplicate_candidate === null ? 1 : 14,
       sub_status_id: null,
     });
+
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).send("Server Error");
   }
 };
 
-module.exports = { getCandidates, getCandidateById, addCandidate };
+// Edit a existing candidate
+const editCandidate = async (req, res) => {
+  try {
+    const {
+      id,
+      name,
+      email,
+      ph_no,
+      current_company,
+      YOE,
+      RYOE,
+      notice_period,
+      cur_location,
+      pref_location,
+      current_ctc,
+      expected_ctc,
+      lwd,
+      opening,
+      vendor_id,
+      opening_id,
+    } = req.body;
+    const resume = req.file ? req.file.path : null;
+
+    const [updated] = await Candidate.update(
+      {
+        name,
+        email,
+        ph_no,
+        current_company,
+        YOE,
+        RYOE,
+        notice_period,
+        cur_location,
+        pref_location,
+        current_ctc,
+        expected_ctc,
+        resume,
+        lwd,
+        vendor_id,
+      },
+      { where: { id: id } }
+    );
+
+    await OpeningVsCandidates.update(
+      {
+        opening_id: opening,
+      },
+      { where: { id: opening_id } }
+    );
+
+    if (!updated) {
+      return res.status(404).send({ message: "Candidate not found" });
+    }
+    const updatedCandidate = await Candidate.findByPk(id); // Retrieve updated user
+    res.send(updatedCandidate);
+  } catch (error) {
+    res.status(500).send({ message: "Error updating user", error });
+  }
+};
+
+// Delete an existing candidate
+const deleteCandidate = async (req, res) => {
+  try {
+    const { id, opening_id } = req.body;
+    const candidate = await Candidate.findByPk(id);
+    if (!candidate) {
+      return res.status(404).send({ message: "Candidate not found" });
+    }
+    // Perform soft delete by setting isActive to false
+    candidate.isActive = false;
+    await candidate.save();
+    await OpeningVsCandidates.update(
+      {
+        status_id: 9,
+      },
+      { where: { id: opening_id } }
+    );
+    res.send({ message: "Candidate marked as inactive successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+module.exports = {
+  getCandidates,
+  getCandidateById,
+  addCandidate,
+  editCandidate,
+  deleteCandidate,
+};

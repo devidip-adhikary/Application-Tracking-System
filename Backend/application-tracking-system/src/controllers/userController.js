@@ -64,7 +64,7 @@ const editUser = async (req, res) => {
   }
 };
 
-// Delete a existing user
+// Delete an existing user
 const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;

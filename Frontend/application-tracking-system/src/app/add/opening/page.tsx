@@ -122,7 +122,6 @@ const AddOpenings: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("opening", opening);
     if (
       opening.client === "" ||
       opening.tech === "" ||

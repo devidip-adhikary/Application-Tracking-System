@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { HeaderContext } from "../Layouts/DefaultLayout";
 
 const TableThree = ({
   tableName = "",
@@ -11,6 +12,7 @@ const TableThree = ({
   const [tableData, setTableData] = useState<[]>();
   const [tableHeader, setTableHeader] = useState<[]>();
   const [isMounted, setIsMounted] = useState(false);
+  const contextData = useContext(HeaderContext);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
@@ -24,9 +26,36 @@ const TableThree = ({
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (contextData.searchItem.length) {
+      const containsSearchQuery = (value: any) => {
+        if (value && typeof value === "object") {
+          return Object.values(value).some(containsSearchQuery);
+        }
+        return String(value).toLowerCase().includes(contextData.searchItem);
+      };
+      const filteredData = data.filter((row: any) => {
+        return Object.values(row).some((value) => containsSearchQuery(value));
+      });
+      setTableData(filteredData);
+    } else {
+      setTableData(data);
+    }
+  }, [contextData]);
+
   const router = useRouter();
   const handleNavigation = (id: number, mode: string) => {
     router.push(`/candidate/${id}?mode=${mode}`);
+  };
+
+  const getNestedValue = (obj: any, path: any) => {
+    return path
+      .split(/\.|\[|\]/)
+      .filter(Boolean)
+      .reduce(
+        (acc: any, part: any) => (acc && acc[part] ? acc[part] : null),
+        obj,
+      );
   };
   if (!isMounted) return null;
   return (
@@ -46,8 +75,8 @@ const TableThree = ({
                   key={index}
                 >
                   {item.id
-                    .replace("_", " ")
-                    .replace(/\b\w/g, (char: any) => char.toUpperCase())}
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (char: string) => char.toUpperCase())}
                 </th>
               ))}
             </tr>
@@ -62,7 +91,7 @@ const TableThree = ({
                   >
                     {item?.value !== "action" ? (
                       <p className="text-sm">
-                        {elem[item?.value]?.name || elem[item?.value] || "-"}
+                        {getNestedValue(elem, item.value) || "-"}
                       </p>
                     ) : (
                       <>

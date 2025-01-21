@@ -15,14 +15,14 @@ const Candidate: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const headerData: any[] = [
+    { id: "Action", value: "action" },
     { id: "Candidate", value: "name" },
     { id: "Phone", value: "ph_no" },
     { id: "Email", value: "email" },
-    { id: "Tech Stack", value: "tech" },
-    { id: "Client", value: "client" },
-    { id: "Vendor", value: "vendor" },
-    { id: "Status", value: "status_master" },
-    { id: "Action", value: "action" },
+    { id: "Tech Stack", value: "openings[0].opening.tech_stack.name" },
+    { id: "Client", value: "openings[0].opening.client.name" },
+    { id: "Vendor", value: "vendor.name" },
+    { id: "Status", value: "status_master.name" },
   ];
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
