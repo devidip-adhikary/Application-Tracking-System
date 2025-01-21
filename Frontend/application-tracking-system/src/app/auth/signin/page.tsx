@@ -26,11 +26,11 @@ const SignIn: React.FC = () => {
         "http://localhost:8000/api/auth/login",
         auth,
       );
-      const { name, email, token } = response.data;
+      const { name, email, role, token } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem(
         "user",
-        JSON.stringify({ userName: name, userMail: email }),
+        JSON.stringify({ userName: name, userMail: email, userRole: role }),
       );
       router.push("/");
     } catch (error: any) {

@@ -71,7 +71,6 @@ const UserById: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log("check", user);
     const token = localStorage.getItem("token") || undefined;
     try {
       const response = await apiAction({
@@ -153,6 +152,7 @@ const UserById: React.FC = () => {
                       options={roleList}
                       setSelectedValue={setSelectedRole}
                       selectedValue={selectedRole}
+                      required
                     />
                   </div>
                 </div>

@@ -2,7 +2,6 @@ const User = require("../models/userModel");
 
 // Fetch all users
 const getUsers = async (req, res) => {
-  console.log("get all user");
   try {
     const users = await User.findAll({
       where: {
@@ -20,8 +19,13 @@ const getUsers = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const newUser = await User.create({ name, email, password, role });
-    res.status(201).json(newUser);
+    const project = await User.findOne({ where: { email: email } });
+    if (project === null) {
+      const newUser = await User.create({ name, email, password, role });
+      res.status(201).json(newUser);
+    } else {
+      res.status(409).send("Duplicate record found with the email id.");
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
@@ -60,7 +64,7 @@ const editUser = async (req, res) => {
   }
 };
 
-// Delete a existing user
+// Delete an existing user
 const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;

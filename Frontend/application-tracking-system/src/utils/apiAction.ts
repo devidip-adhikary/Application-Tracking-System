@@ -7,6 +7,7 @@ interface ApiRequestOptions {
   id?: string | number;
   token?: string;
   queryParams?: Record<string, string | number | boolean>;
+  cType?: string
 }
 
 
@@ -17,6 +18,7 @@ export async function apiAction<T>({
   id,
   token,
   queryParams,
+  cType = 'application/json'
 }: ApiRequestOptions): Promise<T> {
   try {
     // Build the complete URL with ID and query parameters if provided
@@ -32,8 +34,8 @@ export async function apiAction<T>({
       method,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        "Access-Control-Allow-Methods":"GET,PUT,POST,DELETE,OPTIONS",
-        'Content-Type': 'application/json',
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,OPTIONS",
+        'Content-Type': cType,
         ...(token && { Authorization: `Bearer ${token}` }),
       },
       data: body, // Axios uses `data` for the request body
@@ -44,10 +46,10 @@ export async function apiAction<T>({
 
     // Return the response data
     return response.data;
-  } catch (error:any) {
+  } catch (error: any) {
     if (error.status === 401) {
       localStorage.clear();
-      window.location.href='/auth/signin';
+      window.location.href = '/auth/signin';
     } else {
       // Log or handle other errors as needed
       console.error('API request error:', error);

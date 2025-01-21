@@ -2,7 +2,12 @@
 import flatpickr from "flatpickr";
 import { useEffect } from "react";
 
-const DatePickerOne = () => {
+const DatePickerOne = ({
+  name,
+  isDisabled = false,
+  setValue = () => {},
+  value = "",
+}: any) => {
   useEffect(() => {
     // Init flatpickr
     flatpickr(".form-datepicker", {
@@ -14,16 +19,34 @@ const DatePickerOne = () => {
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
       nextArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
+      onChange: (selectedDates) => {
+        // Update the state with the selected date
+        const date = selectedDates[0]; // Since mode is "single", take the first element
+        setValue(date.toISOString().split("T")[0]); // Format as desired, here ISO date string
+      },
     });
   }, []);
 
+  useEffect(() => {
+    flatpickr(".form-datepicker", {
+      defaultDate: value.length
+        ? typeof value === "string"
+          ? value.split("T")[0]
+          : value?.toISOString().split("T")[0]
+        : null,
+    });
+  }, [value]);
+
   return (
     <div>
-      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-        Date picker
+      <label
+        className={`mb-3 block text-sm font-medium ${isDisabled ? "text-black" : "text-grey"} dark:text-white`}
+      >
+        {name}
       </label>
       <div className="relative">
         <input
+          disabled={!isDisabled}
           className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           placeholder="mm/dd/yyyy"
           data-class="flatpickr-right"
