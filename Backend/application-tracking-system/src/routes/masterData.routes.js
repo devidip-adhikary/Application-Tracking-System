@@ -1,0 +1,23 @@
+const express = require("express");
+const authenticate = require("../middlewares/authenticate");
+const { getStatus } = require("../controllers/masterDataController");
+const router = express.Router();
+
+/**
+ * @swagger
+ * /api/data/status:
+ *   get:
+ *     summary: "Get all status"
+ *     tags: [Master Data]
+ *     description: "Retrieve a list of status"
+ *     responses:
+ *       200:
+ *         description: "Successfully retrieved status"
+ *       401:
+ *         description: "Unauthorized"
+ *     security:
+ *       - bearerAuth: []  # This line ensures the route requires JWT authentication
+ */
+router.get("/status", authenticate, getStatus);
+
+module.exports = router;

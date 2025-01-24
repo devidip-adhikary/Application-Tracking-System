@@ -2,18 +2,30 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../Layouts/DefaultLayout";
+import { apiAction } from "@/utils/apiAction";
 
 const TableThree = ({
   tableName = "",
   data = [],
   headerData = [],
   deleteFunc = () => {},
+  defaultFunc = () => {},
 }: any) => {
   const [tableData, setTableData] = useState<[]>();
   const [tableHeader, setTableHeader] = useState<[]>();
+  const [status, setStatus] = useState<any[]>();
   const [isMounted, setIsMounted] = useState(false);
   const contextData = useContext(HeaderContext);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState<any>(null);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const showNotification = (message: string, type: string) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
 
   useEffect(() => {
     if (data.length && headerData.length) {
@@ -23,6 +35,18 @@ const TableThree = ({
   }, [data, headerData]);
 
   useEffect(() => {
+    if (data.length && headerData.length) {
+      let tempHeader = headerData;
+      if (currentUser.userRole === "viewer") {
+        tempHeader.pop();
+      }
+      setTableData(data);
+      setTableHeader(tempHeader);
+    }
+  }, [data, headerData]);
+
+  useEffect(() => {
+    fetchStatus();
     setIsMounted(true);
   }, []);
 
@@ -57,6 +81,59 @@ const TableThree = ({
         obj,
       );
   };
+
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: string,
+  ) => {
+    const token = localStorage.getItem("token") || undefined;
+    const userObject: any = {};
+    userObject["status"] = e.target?.value;
+    userObject["id"] = id;
+
+    console.log("sjb", userObject);
+    // return;
+    try {
+      setLoading(true);
+      const formData = new FormData();
+
+      Object.entries(userObject).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      });
+      const response = await apiAction({
+        url: "http://localhost:8000/api/candidate",
+        method: "PUT",
+        token: token,
+        body: formData,
+        cType: "multipart/form-data",
+      });
+      if (response) {
+        showNotification("Success! The candidate has been added.", "success");
+        defaultFunc();
+      }
+    } catch (error: any) {
+      showNotification(error.response.data, "error");
+      console.error("Error creating candidate data:", error);
+    }
+    setLoading(false);
+  };
+
+  const fetchStatus = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: any[] = await apiAction({
+        url: "http://localhost:8000/api/data/status",
+        method: "GET",
+        token: token,
+      });
+      setStatus([...data]);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   if (!isMounted) return null;
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -71,7 +148,13 @@ const TableThree = ({
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               {tableHeader?.map((item: any, index: number) => (
                 <th
-                  className="min-w-[180px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11"
+                  className={`min-w-[180px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11 ${
+                    index === 0
+                      ? "sticky-left" // First column
+                      : index === tableHeader.length - 1
+                        ? "sticky-right" // Last column
+                        : ""
+                  }`}
                   key={index}
                 >
                   {item.id
@@ -86,13 +169,41 @@ const TableThree = ({
               <tr key={index}>
                 {tableHeader?.map((item: any, ind: number) => (
                   <td
-                    className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11"
+                    className={`border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11 ${
+                      ind === 0
+                        ? "sticky-left" // First column
+                        : ind === tableHeader.length - 1
+                          ? "sticky-right" // Last column
+                          : ""
+                    }`}
                     key={index + ind}
                   >
                     {item?.value !== "action" ? (
-                      <p className="text-sm">
-                        {getNestedValue(elem, item.value) || "-"}
-                      </p>
+                      item?.value !== "status_master.name" ? (
+                        <p className="text-sm">
+                          {getNestedValue(elem, item.value) || "-"}
+                        </p>
+                      ) : (
+                        <>
+                          <div className="relative z-20 bg-transparent dark:bg-form-input">
+                            <select
+                              value={elem.status}
+                              onChange={(e: any) => handleChange(e, elem.id)}
+                              className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+                            >
+                              {status?.map((data: any, i: number) => (
+                                <option
+                                  key={i}
+                                  value={data.id}
+                                  className="text-body dark:text-bodydark"
+                                >
+                                  {data.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </>
+                      )
                     ) : (
                       <>
                         <div className="flex items-center space-x-3.5">
@@ -101,11 +212,11 @@ const TableThree = ({
                             onClick={() => handleNavigation(elem?.id, "view")}
                           >
                             <svg
-                              className="fill-current"
-                              width="18"
-                              height="18"
+                              className=""
+                              width="20"
+                              height="20"
                               viewBox="0 0 18 18"
-                              fill="none"
+                              fill="coral"
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
@@ -120,13 +231,16 @@ const TableThree = ({
                           </button>
                           {currentUser.userRole !== "viewer" ? (
                             <>
-                              <button className="hover:text-primary">
+                              <button
+                                className="pe-2 hover:text-primary"
+                                onClick={() => deleteFunc(elem.id)}
+                              >
                                 <svg
-                                  className="fill-current"
-                                  width="18"
-                                  height="18"
+                                  className=""
+                                  width="20"
+                                  height="20"
                                   viewBox="0 0 18 18"
-                                  fill="none"
+                                  fill="indianRed"
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
                                   <path
@@ -156,8 +270,8 @@ const TableThree = ({
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  className="size-4"
+                                  fill="blue"
+                                  className="size-5"
                                 >
                                   <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                                   <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />

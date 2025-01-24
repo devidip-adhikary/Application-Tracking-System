@@ -7,6 +7,7 @@ import SwitcherThree from "@/components/Switchers/SwitcherThree";
 import { Candidates } from "@/types/candidate";
 import { Openings } from "@/types/opening";
 import { apiAction } from "@/utils/apiAction";
+import axios from "axios";
 import { useParams } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -196,15 +197,27 @@ const CandidateByID: React.FC = () => {
     setLoading(false);
   };
 
-  const downloadResume = (filePath: any) => {
-    // Adjust the file path to use forward slashes and ensure it points to the correct public URL
-    const url = filePath.replace(/\\/g, "/"); // Convert backslashes to forward slashes if needed
-    const link = document.createElement("a");
-    link.href = "http://localhost:8000/" + url;
-    link.download = ""; // The browser will determine the file name from the URL or content-disposition
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadResume = async (id: any) => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data = await axios.get(
+        `http://localhost:8000/api/download/resume/${id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const blob = new Blob([data.data], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `${candidate.name.trim()}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Error fetching vendor data:", error);
+    }
   };
 
   return loading ? (
@@ -318,12 +331,12 @@ const CandidateByID: React.FC = () => {
                             viewBox="0 0 24 24"
                             fill="currentColor"
                             className="mx-2 inline size-6"
-                            onClick={() => downloadResume(candidate?.resume)}
+                            onClick={() => downloadResume(candidate?.id)}
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             />
                           </svg>
                         )}

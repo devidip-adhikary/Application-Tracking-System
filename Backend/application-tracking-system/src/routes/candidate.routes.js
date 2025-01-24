@@ -228,7 +228,7 @@ router.put("/", upload.single("resume"), authenticate, editCandidate);
 
 /**
  * @swagger
- * /api/candidate:
+ * /api/candidate/{id}:
  *   delete:
  *     summary: Delete an existing candidate
  *     description: Soft delete an existing candidate by marking them as inactive.
@@ -237,17 +237,12 @@ router.put("/", upload.single("resume"), authenticate, editCandidate);
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               id:
- *                 type: integer
- *                 description: ID of the candidate to be deleted.
- *                 example: 1
- *               opening_id:
- *                 type: integer
- *                 description: ID of the opening related to the candidate.
- *                 example: 10
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User marked as inactive successfully
  *     responses:
  *       200:
  *         description: Candidate marked as inactive successfully.
@@ -277,6 +272,6 @@ router.put("/", upload.single("resume"), authenticate, editCandidate);
  *               type: string
  *               example: Server Error
  */
-router.delete("/", authenticate, deleteCandidate);
+router.delete("/:id", authenticate, deleteCandidate);
 
 module.exports = router;

@@ -1,18 +1,18 @@
-const xlsx = require('xlsx');
-const { sequelize } = require('../config/db');
-const Candidates = require('../models/candidateModel');
-const Vendors = require('../models/vendorsModel');
-const Clients = require('../models/clientModel');
-const Statuses = require('../models/statusModel');
-const TechStack = require('../models/techStackModel');
+const xlsx = require("xlsx");
+const { sequelize } = require("../config/db");
+const Candidates = require("../models/candidateModel");
+const Vendors = require("../models/vendorsModel");
+const Clients = require("../models/clientModel");
+const Statuses = require("../models/statusModel");
+const TechStack = require("../models/techStackModel");
 
 const uploadMasterData = async (req, res) => {
   const BATCH_SIZE = 1; // Number of rows to process per batch
   const models = {
-    'Vendor': Vendors,
-    'Status': Statuses,
-    'Client': Clients,
-    'Tech Stack': TechStack,
+    Vendor: Vendors,
+    Status: Statuses,
+    Client: Clients,
+    "Tech Stack": TechStack,
   };
 
   try {
@@ -33,7 +33,7 @@ const uploadMasterData = async (req, res) => {
       }
 
       // Process Candidates separately to handle vendor ID mapping
-      const candidateSheet = workbook.Sheets['Candidate'];
+      const candidateSheet = workbook.Sheets["Candidate"];
       if (candidateSheet) {
         const candidateData = xlsx.utils.sheet_to_json(candidateSheet);
 
@@ -50,7 +50,9 @@ const uploadMasterData = async (req, res) => {
             if (vendor) {
               candidate.vendor_id = vendor.id;
             } else {
-              throw new Error(`Vendor not found for candidate ${candidate.name}`);
+              throw new Error(
+                `Vendor not found for candidate ${candidate.name}`
+              );
             }
           }
 
@@ -60,10 +62,10 @@ const uploadMasterData = async (req, res) => {
       }
     });
 
-    res.status(200).send('Data uploaded successfully for all sheets');
+    res.status(200).send("Data uploaded successfully for all sheets");
   } catch (error) {
-    console.error('Error uploading data:', error);
-    res.status(500).send('Error uploading data');
+    console.error("Error uploading data:", error);
+    res.status(500).send("Error uploading data");
   }
 };
 

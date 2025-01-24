@@ -46,6 +46,22 @@ const Candidate: React.FC = () => {
     setLoading(false);
   };
 
+  const handleDelete = async (id: string) => {
+    setLoading(true);
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: Candidates[] = await apiAction({
+        url: `http://localhost:8000/api/candidate/${id}`,
+        method: "DELETE",
+        token: token,
+      });
+      fetchUser();
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching candidate data:", error);
+    }
+  };
+
   return loading ? (
     <Loader />
   ) : (
@@ -82,6 +98,8 @@ const Candidate: React.FC = () => {
               tableName="Candidate List"
               data={candidateList}
               headerData={headerData}
+              defaultFunc={fetchUser}
+              deleteFunc={handleDelete}
             />
           </div>
         </div>

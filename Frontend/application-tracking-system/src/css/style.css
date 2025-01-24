@@ -275,3 +275,17 @@ div::-webkit-scrollbar-thumb {
     border-radius: 8px;
     background-color: #1c2434;
 }
+
+th.sticky-left, td.sticky-left {
+    position: sticky;
+    left: 0;
+    background-color: #f2f5fa; /* Optional: Highlight the sticky column */
+    z-index: 1; /* Ensure it appears above other cells */
+  }
+  
+  th.sticky-right, td.sticky-right {
+    position: sticky;
+    right: 0;
+    background-color: #f2f5fa; /* Optional: Highlight the sticky column */
+    z-index: 1; /* Ensure it appears above other cells */
+  }

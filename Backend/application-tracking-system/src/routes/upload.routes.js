@@ -1,10 +1,10 @@
-const express = require('express');
-const multer = require('multer');
-const { uploadMasterData } = require('../controllers/uploadController');
-const authenticate = require('../middlewares/authenticate');
+const express = require("express");
+const multer = require("multer");
+const { uploadMasterData } = require("../controllers/uploadController");
+const authenticate = require("../middlewares/authenticate");
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: "uploads/" });
 /**
  * @swagger
  * /api/upload:
@@ -33,6 +33,6 @@ const upload = multer({ dest: 'uploads/' });
  * tags:
  *   - Upload
  */
-router.post('/',authenticate, upload.single('file'), uploadMasterData);
+router.post("/", authenticate, upload.single("file"), uploadMasterData);
 
 module.exports = router;

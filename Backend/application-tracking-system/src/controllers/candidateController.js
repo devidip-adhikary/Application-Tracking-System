@@ -165,8 +165,11 @@ const editCandidate = async (req, res) => {
       opening,
       vendor_id,
       opening_id,
+      status,
     } = req.body;
-    const resume = req.file ? req.file.path : null;
+
+    const user = await Candidate.findByPk(id);
+    const resume = req.file ? req.file.path : user.resume;
 
     const [updated] = await Candidate.update(
       {
@@ -184,6 +187,7 @@ const editCandidate = async (req, res) => {
         resume,
         lwd,
         vendor_id,
+        status,
       },
       { where: { id: id } }
     );
@@ -208,8 +212,10 @@ const editCandidate = async (req, res) => {
 // Delete an existing candidate
 const deleteCandidate = async (req, res) => {
   try {
-    const { id, opening_id } = req.body;
+    const id = req.params.id;
     const candidate = await Candidate.findByPk(id);
+    console.log("ncb", id, candidate);
+    // return;
     if (!candidate) {
       return res.status(404).send({ message: "Candidate not found" });
     }
@@ -220,7 +226,7 @@ const deleteCandidate = async (req, res) => {
       {
         status_id: 9,
       },
-      { where: { id: opening_id } }
+      { where: { candidate_id: id } }
     );
     res.send({ message: "Candidate marked as inactive successfully" });
   } catch (error) {

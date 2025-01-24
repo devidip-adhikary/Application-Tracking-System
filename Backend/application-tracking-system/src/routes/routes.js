@@ -7,6 +7,8 @@ const clientRoutes = require("./client.routes");
 const openingRoutes = require("./opening.routes");
 const techRoutes = require("./tech.routes");
 const uploadRoutes = require("./upload.routes");
+const downloadRoutes = require("./download.routes");
+const dataRoutes = require("./masterData.routes");
 
 const router = express.Router();
 
@@ -19,5 +21,7 @@ router.use("/vendor", vendorRoutes);
 router.use("/client", clientRoutes);
 router.use("/tech", techRoutes);
 router.use("/upload", uploadRoutes);
+router.use("/download", downloadRoutes);
+router.use("/data", dataRoutes);
 
 module.exports = router;

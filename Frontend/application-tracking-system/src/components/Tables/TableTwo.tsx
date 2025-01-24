@@ -41,8 +41,8 @@ const TableTwo = ({
     }
   }, [contextData]);
 
-  const handleNavigation = (id: number) => {
-    router.push(`/user/${id}`);
+  const handleNavigation = (id: number, mode: string) => {
+    router.push(`/user/${id}?mode=${mode}`);
   };
 
   return (
@@ -116,7 +116,7 @@ const TableTwo = ({
                       </button>
                       <button
                         className="hover:text-primary"
-                        onClick={() => handleNavigation(elem.id)}
+                        onClick={() => handleNavigation(elem.id, "edit")}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
