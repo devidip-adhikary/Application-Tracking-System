@@ -10,9 +10,6 @@ const getOpenings = async (req, res) => {
         { model: Clients, required: true, attributes: ["name"] },
         { model: TechStack, required: true, attributes: ["name"] },
       ],
-      where: {
-        isActive: true,
-      },
     });
     return res.status(200).json(opening);
   } catch (error) {
@@ -21,6 +18,7 @@ const getOpenings = async (req, res) => {
   }
 };
 
+// Add a new opening
 const addOpenings = async (req, res) => {
   try {
     const {
@@ -55,4 +53,55 @@ const addOpenings = async (req, res) => {
   }
 };
 
-module.exports = { getOpenings, addOpenings };
+// Update an existing opening
+const editOpenings = async (req, res) => {
+  try {
+    const {
+      id,
+      name,
+      client,
+      tech,
+      job_description,
+      location,
+      number_of_requiremnts,
+      work_mode,
+    } = req.body;
+
+    const [updated] = await Opening.update(
+      {
+        name,
+        client,
+        tech,
+        job_description,
+        location,
+        number_of_requiremnts,
+        work_mode,
+      },
+      { where: { id: id } }
+    );
+    res.status(201).json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+// Delete an existing candidate
+const deleteOpening = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const opening = await Opening.findByPk(id);
+    if (!opening) {
+      return res.status(404).send({ message: "Opening not found" });
+    }
+    // Perform soft delete by setting isActive to false
+    opening.isActive = false;
+    await opening.save();
+    res.send({ message: "Opening marked as inactive successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+module.exports = { getOpenings, addOpenings, editOpenings, deleteOpening };

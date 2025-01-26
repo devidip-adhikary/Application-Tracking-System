@@ -31,6 +31,7 @@ const AddCandidate: React.FC = () => {
   const [openingList, setOpeningList] = useState<Openings[]>([]);
   const [vendorList, setVendorList] = useState<[]>([]);
   const [resume, setResume] = useState<File | null>(null);
+  const [candidateData, setCandidateData] = useState<File | null>(null);
   const [selectedOpening, setSelectedOpening] = useState<string>("");
   const [selectedVendor, setSelectedVendor] = useState<string>("");
   const [selectedLWD, setSelectedLWD] = useState<string>("");
@@ -77,6 +78,14 @@ const AddCandidate: React.FC = () => {
       setResume(e.target.files[0]);
     } else {
       setResume(null);
+    }
+  };
+
+  const handleUploadData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setCandidateData(e.target.files[0]);
+    } else {
+      setCandidateData(null);
     }
   };
 
@@ -167,9 +176,35 @@ const AddCandidate: React.FC = () => {
         method: "GET",
         token: token,
       });
-      setOpeningList([...data]);
+      let filterderData = data.filter((elem: any) => elem.isActive);
+      setOpeningList([...filterderData]);
     } catch (error) {
       console.error("Error fetching vendor data:", error);
+    }
+    setLoading(false);
+  };
+
+  const uploadData = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      if (candidateData) {
+        formData.append("resume", candidateData);
+      }
+      const response = await apiAction({
+        url: "http://localhost:8000/api/upload/candidate",
+        method: "POST",
+        token: token,
+        body: formData,
+        cType: "multipart/form-data",
+      });
+      if (response) {
+        showNotification("Success! The candidate has been added.", "success");
+      }
+    } catch (error: any) {
+      showNotification(error.response.data, "error");
+      console.error("Error creating candidate data:", error);
     }
     setLoading(false);
   };
@@ -204,13 +239,17 @@ const AddCandidate: React.FC = () => {
                         </label>
                         <input
                           type="file"
+                          onChange={handleUploadData}
                           className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                         />
                       </div>
                     </div>
                     <div className="w-full self-end xl:w-1/4">
                       <div className="">
-                        <button className="mb-1 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                        <button
+                          onClick={uploadData}
+                          className="mb-1 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                        >
                           <span className="pe-2">Upload</span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -15,15 +15,17 @@ const Opening: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const headerData: any[] = [
-    "name",
-    "client",
-    "tech_stack",
-    "job_description",
-    "location",
-    "number_of_requiremnts",
-    "work_mode",
-    "action",
+    { id: "Name", value: "name" },
+    { id: "Client", value: "client" },
+    { id: "Tech Stack", value: "tech_stack" },
+    { id: "Job Description", value: "job_description" },
+    { id: "Location", value: "location" },
+    { id: "Number of Requirements", value: "number_of_requiremnts" },
+    { id: "Work Mode", value: "work_mode" },
+    { id: "Status", value: "isActive" },
+    { id: "Action", value: "action" },
   ];
+
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {

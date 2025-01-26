@@ -69,4 +69,48 @@ const uploadMasterData = async (req, res) => {
   }
 };
 
-module.exports = { uploadMasterData };
+const uploadCandidateData = async (req, res) => {
+  const BATCH_SIZE = 1; // Number of rows to process per batch
+  try {
+    const filePath = req.file.path;
+    const workbook = xlsx.readFile(filePath);
+
+    await sequelize.transaction(async (transaction) => {
+      // Process Candidates separately to handle vendor ID mapping
+      const candidateSheet = workbook.Sheets["Candidate"];
+      if (candidateSheet) {
+        const candidateData = xlsx.utils.sheet_to_json(candidateSheet);
+
+        for (let i = 0; i < candidateData.length; i += BATCH_SIZE) {
+          const batch = candidateData.slice(i, i + BATCH_SIZE);
+
+          // Map vendor name to vendor ID
+          for (const candidate of batch) {
+            const vendor = await Vendors.findOne({
+              where: { name: candidate.vendor_name },
+              transaction,
+            });
+
+            if (vendor) {
+              candidate.vendor_id = vendor.id;
+            } else {
+              throw new Error(
+                `Vendor not found for candidate ${candidate.name}`
+              );
+            }
+          }
+
+          // Insert candidates with vendor_id mapped
+          await Candidates.bulkCreate(batch, { transaction });
+        }
+      }
+    });
+
+    res.status(200).send("Data uploaded successfully for all sheets");
+  } catch (error) {
+    console.error("Error uploading data:", error);
+    res.status(500).send("Error uploading data");
+  }
+};
+
+module.exports = { uploadMasterData, uploadCandidateData };

@@ -9,8 +9,8 @@ const TableTwo = ({
   headerData = [],
   deleteFunc = () => {},
 }: any) => {
-  const [tableData, setTableData] = useState<[]>();
-  const [tableHeader, setTableHeader] = useState<[]>();
+  const [tableData, setTableData] = useState<any[]>();
+  const [tableHeader, setTableHeader] = useState<any[]>();
   const router = useRouter();
   const contextData = useContext(HeaderContext);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
@@ -45,6 +45,17 @@ const TableTwo = ({
     router.push(`/user/${id}?mode=${mode}`);
   };
 
+  const getNestedValue = (obj: any, path: any) => {
+    const element = path
+      .split(/\.|\[|\]/)
+      .filter(Boolean)
+      .reduce((acc: any, part: any) => acc?.[part] || false, obj);
+
+    if (element?.name) return element.name;
+    if (typeof element === "boolean") return element ? "Active" : "Closed";
+    return element ? element.toString() : "-";
+  };
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="px-4 py-6 md:px-6 xl:px-7.5">
@@ -61,30 +72,31 @@ const TableTwo = ({
             overflow: "auto",
           }}
         >
-          {tableHeader?.map((item: string, index: number) => (
+          {tableHeader?.map((item: any, index: number) => (
             <div className={`break-words text-center`} key={index}>
               <p className="font-bold">
-                {item
+                {item.id
                   .replace(/_/g, " ")
-                  .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  .replace(/\b\w/g, (char: any) => char.toUpperCase())}
               </p>
             </div>
           ))}
 
           {tableData?.map((elem: any, index: number) =>
-            tableHeader?.map((item: string, ind: number) => (
+            tableHeader?.map((item: any, ind: number) => (
               <div
                 className={`border-t border-stroke px-4 py-4.5 dark:border-strokedark md:px-6 2xl:px-7.5`}
                 key={index + ind}
               >
                 <div className="break-words text-center">
-                  {item !== "action" ? (
+                  {item.value !== "action" ? (
                     <p className="text-sm text-black dark:text-white">
-                      {elem[item]?.name || elem[item] || "-"}
+                      {getNestedValue(elem, item.value) || "-"}
                     </p>
                   ) : currentUser.userRole !== "viewer" ? (
                     <>
                       <button
+                        disabled={!elem["isActive"]}
                         className="pe-2 hover:text-primary"
                         onClick={() => deleteFunc(elem.id)}
                       >
@@ -93,7 +105,7 @@ const TableTwo = ({
                           width="20"
                           height="20"
                           viewBox="0 0 18 18"
-                          fill="indianRed"
+                          fill={!elem["isActive"] ? "gray" : "indianRed"}
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
@@ -115,13 +127,14 @@ const TableTwo = ({
                         </svg>
                       </button>
                       <button
+                        disabled={!elem["isActive"]}
                         className="hover:text-primary"
                         onClick={() => handleNavigation(elem.id, "edit")}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
-                          fill="currentColor"
+                          fill={!elem["isActive"] ? "gray" : "currentColor"}
                           className="size-5"
                         >
                           <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />

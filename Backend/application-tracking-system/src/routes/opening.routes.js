@@ -3,6 +3,8 @@ const authenticate = require("../middlewares/authenticate");
 const {
   getOpenings,
   addOpenings,
+  editOpenings,
+  deleteOpening,
 } = require("../controllers/openingController");
 const router = express.Router();
 
@@ -78,5 +80,106 @@ router.get("/", authenticate, getOpenings);
  *         description: Server error.
  */
 router.post("/", authenticate, addOpenings);
+
+/**
+ * @swagger
+ * /api/opening:
+ *   put:
+ *     summary: Edit an existing opening
+ *     description: Updates the details of an opening in the database using its ID.
+ *     tags: [Opening]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID of the opening to be updated.
+ *                 example: 1
+ *               name:
+ *                 type: string
+ *                 description: Name of the opening.
+ *                 example: Software Developer
+ *               client:
+ *                 type: string
+ *                 description: Client associated with the opening.
+ *                 example: TechCorp
+ *               tech:
+ *                 type: string
+ *                 description: Technologies required for the opening.
+ *                 example: JavaScript, React, Node.js
+ *               job_description:
+ *                 type: string
+ *                 description: Description of the job.
+ *                 example: Responsible for developing web applications.
+ *               location:
+ *                 type: string
+ *                 description: Job location.
+ *                 example: Remote
+ *               number_of_requiremnts:
+ *                 type: integer
+ *                 description: Number of positions available.
+ *                 example: 3
+ *               work_mode:
+ *                 type: string
+ *                 description: Work mode (e.g., Onsite, Remote, Hybrid).
+ *                 example: Hybrid
+ *     responses:
+ *       201:
+ *         description: Successfully updated the opening.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: integer
+ *               description: Number of rows updated.
+ *               example: 1
+ *       500:
+ *         description: Internal server error.
+ */
+router.put("/", authenticate, editOpenings);
+
+/**
+ * @swagger
+ * /api/opening/{id}:
+ *   delete:
+ *     summary: Soft delete an opening
+ *     description: Marks an opening as inactive by setting the `isActive` property to `false`.
+ *     tags: [Opening]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the opening to be soft-deleted.
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Successfully marked the opening as inactive.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Opening marked as inactive successfully
+ *       404:
+ *         description: Opening not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Opening not found
+ *       500:
+ *         description: Internal server error.
+ */
+router.delete("/:id", authenticate, deleteOpening);
 
 module.exports = router;
