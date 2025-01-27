@@ -73,13 +73,14 @@ const TableThree = ({
   };
 
   const getNestedValue = (obj: any, path: any) => {
-    return path
+    const element = path
       .split(/\.|\[|\]/)
       .filter(Boolean)
-      .reduce(
-        (acc: any, part: any) => (acc && acc[part] ? acc[part] : null),
-        obj,
-      );
+      .reduce((acc: any, part: any) => acc?.[part] || false, obj);
+
+    if (element?.name) return element.name;
+    if (typeof element === "boolean") return element ? "Active" : "Closed";
+    return element ? element.toString() : "-";
   };
 
   const handleChange = async (
@@ -184,8 +185,18 @@ const TableThree = ({
                         <>
                           <div className="relative z-20 bg-transparent dark:bg-form-input">
                             <select
-                              value={elem.status}
-                              onChange={(e: any) => handleChange(e, elem.id)}
+                              disabled={
+                                elem.candidate
+                                  ? !elem.candidate.isActive
+                                  : !elem.isActive
+                              }
+                              value={elem.status || elem.candidate.status}
+                              onChange={(e: any) =>
+                                handleChange(
+                                  e,
+                                  elem.candidate ? elem.candidate.id : elem.id,
+                                )
+                              }
                               className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
                             >
                               {status?.map((data: any, i: number) => (

@@ -1,22 +1,99 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CardDataStats from "../CardDataStats";
 import TableThree from "../Tables/TableThree";
 import DefaultLayout from "../Layouts/DefaultLayout";
 import withAuth from "@/app/context/AuthContext";
 import { redirect } from "next/navigation";
+import Loader from "../common/Loader";
+import { OpeningVsCandidate } from "@/types/opening_vs_candidate";
+import { apiAction } from "@/utils/apiAction";
 
 const Dashboard: React.FC = () => {
+  const [openingCandidateList, setOpeningCandidateList] = useState<
+    OpeningVsCandidate[] | undefined
+  >(undefined);
+  const [loading, setLoading] = useState(false);
+  const [statData, setStatData] = useState<any[]>();
+  const headerData: any[] = [
+    { id: "Candidate", value: "candidate.name" },
+    { id: "Phone", value: "candidate.ph_no" },
+    { id: "Email", value: "candidate.email" },
+    { id: "Tech Stack", value: "opening.tech_stack.name" },
+    { id: "Client", value: "opening.client.name" },
+    { id: "Vendor", value: "candidate.vendor.name" },
+    { id: "Job Description", value: "opening.job_description" },
+    { id: "Location", value: "opening.location" },
+    { id: "Number of Requirements", value: "opening.number_of_requiremnts" },
+    { id: "Work Mode", value: "opening.work_mode" },
+    { id: "Candidate Status", value: "candidate.isActive" },
+    { id: "Status", value: "status_master.name" },
+  ];
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       redirect("/auth/signin"); // Redirect to SignIn page if not authenticated
     }
   }, []);
-  return (
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setStatData([{ ...statData }, fetchStat("Onboarded")]);
+    setStatData([{ ...statData }, fetchStat("Rejected")]);
+    setStatData([{ ...statData }, fetchStat("Declined")]);
+  }, []);
+
+  const fetchData = async () => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: OpeningVsCandidate[] = await apiAction({
+        url: "http://localhost:8000/api/openings-vs-candidate",
+        method: "GET",
+        token: token,
+      });
+      setOpeningCandidateList([...data]);
+      setStatData([
+        {
+          req_status: "Openings",
+          count: data.length,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching opening data:", error);
+    }
+    setLoading(false);
+  };
+
+  const fetchStat = async (status: string) => {
+    const token = localStorage.getItem("token") || undefined;
+    try {
+      const data: OpeningVsCandidate[] = await apiAction({
+        url: `http://localhost:8000/api/openings-vs-candidate/${status}`,
+        method: "GET",
+        token: token,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error fetching opening data:", error);
+    }
+    setLoading(false);
+  };
+
+  const findCount = (stat: string) => {
+    return statData?.find((el: any) => el.req_status === stat)?.count || 0;
+  };
+
+  return loading ? (
+    <Loader />
+  ) : (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total Openings" total="50">
+        <CardDataStats title="Total Openings" total={findCount("Openings")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -33,7 +110,7 @@ const Dashboard: React.FC = () => {
             <path d="M3 18.4v-2.796a4.3 4.3 0 0 0 .713.31A26.226 26.226 0 0 0 12 17.25c2.892 0 5.68-.468 8.287-1.335.252-.084.49-.189.713-.311V18.4c0 1.452-1.047 2.728-2.523 2.923-2.12.282-4.282.427-6.477.427a49.19 49.19 0 0 1-6.477-.427C4.047 21.128 3 19.852 3 18.4Z" />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Onboarded" total="20">
+        <CardDataStats title="Total Onboarded" total={findCount("Onboarded")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -50,7 +127,7 @@ const Dashboard: React.FC = () => {
             <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Rejected" total="10">
+        <CardDataStats title="Total Rejected" total={findCount("Rejected")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -62,7 +139,7 @@ const Dashboard: React.FC = () => {
             <path d="M10.375 2.25a4.125 4.125 0 1 0 0 8.25 4.125 4.125 0 0 0 0-8.25ZM10.375 12a7.125 7.125 0 0 0-7.124 7.247.75.75 0 0 0 .363.63 13.067 13.067 0 0 0 6.761 1.873c2.472 0 4.786-.684 6.76-1.873a.75.75 0 0 0 .364-.63l.001-.12v-.002A7.125 7.125 0 0 0 10.375 12ZM16 9.75a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Z" />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Declined" total="15">
+        <CardDataStats title="Total Declined" total={findCount("Declined")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -82,7 +159,12 @@ const Dashboard: React.FC = () => {
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="col-span-12 xl:col-span-12">
-          <TableThree />
+          <TableThree
+            tableName="Dashboard"
+            data={openingCandidateList}
+            headerData={headerData}
+            defaultFunc={fetchData}
+          />
         </div>
       </div>
     </DefaultLayout>

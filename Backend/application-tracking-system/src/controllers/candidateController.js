@@ -16,7 +16,6 @@ const getCandidates = async (req, res) => {
         { model: Statuses, required: true, attributes: ["name"] },
         {
           model: OpeningVsCandidates,
-          as: "openings",
           include: [
             {
               model: Openings,

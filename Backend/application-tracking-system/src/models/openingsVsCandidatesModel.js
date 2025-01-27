@@ -50,8 +50,9 @@ const OpeningVsCandidates = sequelize.define(
 );
 
 // Define associations
-OpeningVsCandidates.belongsTo(Openings, { foreignKey: "opening_id" });
-// OpeningVsCandidates.belongsTo(Candidates, { foreignKey: "candidate_id" });
+OpeningVsCandidates.belongsTo(Openings, {
+  foreignKey: "opening_id",
+});
 OpeningVsCandidates.belongsTo(Statuses, { foreignKey: "status_id" });
 OpeningVsCandidates.belongsTo(SubStatus, { foreignKey: "sub_status_id" });
 

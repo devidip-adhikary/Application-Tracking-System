@@ -9,6 +9,7 @@ const techRoutes = require("./tech.routes");
 const uploadRoutes = require("./upload.routes");
 const downloadRoutes = require("./download.routes");
 const dataRoutes = require("./masterData.routes");
+const openingVScandidate = require("./openingVScandidate.routes");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use("/tech", techRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/download", downloadRoutes);
 router.use("/data", dataRoutes);
+router.use("/openings-vs-candidate", openingVScandidate);
 
 module.exports = router;

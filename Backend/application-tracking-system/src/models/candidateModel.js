@@ -95,12 +95,15 @@ const Candidates = sequelize.define(
 );
 
 // Define associations
-Candidates.belongsTo(Vendors, { foreignKey: "vendor_id" }); // Candidates belongs to Vendors
-Candidates.belongsTo(Statuses, { foreignKey: "status" }); // Candidates belongs to Vendors
+Candidates.belongsTo(Vendors, { foreignKey: "vendor_id" });
+Candidates.belongsTo(Statuses, { foreignKey: "status" });
 
 Candidates.hasMany(OpeningVsCandidates, {
   foreignKey: "candidate_id",
-  as: "openings",
-}); // New association
+});
+
+OpeningVsCandidates.belongsTo(Candidates, {
+  foreignKey: "candidate_id",
+});
 
 module.exports = Candidates;
