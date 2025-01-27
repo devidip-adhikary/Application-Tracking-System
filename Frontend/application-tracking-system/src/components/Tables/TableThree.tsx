@@ -176,8 +176,8 @@ const TableThree = ({
                     }`}
                     key={index + ind}
                   >
-                    {item?.value !== "action" ? (
-                      item?.value !== "status_master.name" ? (
+                    {item?.id !== "Action" ? (
+                      item?.id !== "Status" ? (
                         <p className="text-sm">
                           {getNestedValue(elem, item.value) || "-"}
                         </p>

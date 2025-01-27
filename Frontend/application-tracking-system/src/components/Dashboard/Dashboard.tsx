@@ -27,7 +27,8 @@ const Dashboard: React.FC = () => {
     { id: "Number of Requirements", value: "opening.number_of_requiremnts" },
     { id: "Work Mode", value: "opening.work_mode" },
     { id: "Candidate Status", value: "candidate.isActive" },
-    { id: "Status", value: "status_master.name" },
+    { id: "Progress Status", value: "status_master.name" },
+    { id: "Opening", value: "opening.name" },
   ];
 
   useEffect(() => {
