@@ -54,8 +54,8 @@ const getDashboardStat = async (req, res) => {
     });
 
     // Count the records in the opening_vs_candidate table for the status_id
-    const count = await OpeningVsCandidates.count({
-      where: { status_id: status.id },
+    const count = await Candidates.count({
+      where: { status: status.id },
     });
 
     res.json({ req_status, count });

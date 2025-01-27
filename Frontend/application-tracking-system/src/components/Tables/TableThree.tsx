@@ -52,15 +52,17 @@ const TableThree = ({
 
   useEffect(() => {
     if (contextData.searchItem.length) {
+      const searchTerm = contextData.searchItem.toLowerCase();
       const containsSearchQuery = (value: any) => {
         if (value && typeof value === "object") {
           return Object.values(value).some(containsSearchQuery);
         }
-        return String(value).toLowerCase().includes(contextData.searchItem);
+        return String(value).toLowerCase().includes(searchTerm);
       };
       const filteredData = data.filter((row: any) => {
         return Object.values(row).some((value) => containsSearchQuery(value));
       });
+      console.log("Filtered Data:", filteredData);
       setTableData(filteredData);
     } else {
       setTableData(data);

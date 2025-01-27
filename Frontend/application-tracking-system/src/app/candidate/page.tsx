@@ -19,8 +19,11 @@ const Candidate: React.FC = () => {
     { id: "Candidate", value: "name" },
     { id: "Phone", value: "ph_no" },
     { id: "Email", value: "email" },
-    { id: "Tech Stack", value: "openings[0].opening.tech_stack.name" },
-    { id: "Client", value: "openings[0].opening.client.name" },
+    {
+      id: "Tech Stack",
+      value: "opening_vs_candidates[0].opening.tech_stack.name",
+    },
+    { id: "Client", value: "opening_vs_candidates[0].opening.client.name" },
     { id: "Vendor", value: "vendor.name" },
     { id: "Status", value: "status_master.name" },
   ];

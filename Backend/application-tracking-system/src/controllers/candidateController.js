@@ -194,6 +194,7 @@ const editCandidate = async (req, res) => {
     await OpeningVsCandidates.update(
       {
         opening_id: opening,
+        status_id: status,
       },
       { where: { id: opening_id } }
     );

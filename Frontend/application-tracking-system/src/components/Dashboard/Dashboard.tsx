@@ -10,9 +10,8 @@ import { OpeningVsCandidate } from "@/types/opening_vs_candidate";
 import { apiAction } from "@/utils/apiAction";
 
 const Dashboard: React.FC = () => {
-  const [openingCandidateList, setOpeningCandidateList] = useState<
-    OpeningVsCandidate[] | undefined
-  >(undefined);
+  const [openingCandidateList, setOpeningCandidateList] =
+    useState<OpeningVsCandidate[]>();
   const [loading, setLoading] = useState(false);
   const [statData, setStatData] = useState<any[]>();
   const headerData: any[] = [
@@ -44,10 +43,16 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setStatData([{ ...statData }, fetchStat("Onboarded")]);
-    setStatData([{ ...statData }, fetchStat("Rejected")]);
-    setStatData([{ ...statData }, fetchStat("Declined")]);
-  }, []);
+    const fetchAllStatsSequentially = async () => {
+      if (openingCandidateList && openingCandidateList.length > 0) {
+        await fetchStat("Onboarded");
+        await fetchStat("Rejected");
+        await fetchStat("Declined");
+      }
+    };
+
+    fetchAllStatsSequentially();
+  }, [openingCandidateList?.length]);
 
   const fetchData = async () => {
     const token = localStorage.getItem("token") || undefined;
@@ -57,13 +62,13 @@ const Dashboard: React.FC = () => {
         method: "GET",
         token: token,
       });
+      let tempArr = [];
+      tempArr.push({
+        req_status: "Openings",
+        count: data.length,
+      });
+      setStatData(tempArr);
       setOpeningCandidateList([...data]);
-      setStatData([
-        {
-          req_status: "Openings",
-          count: data.length,
-        },
-      ]);
     } catch (error) {
       console.error("Error fetching opening data:", error);
     }
@@ -71,14 +76,19 @@ const Dashboard: React.FC = () => {
   };
 
   const fetchStat = async (status: string) => {
+    console.log("eh", statData, status);
     const token = localStorage.getItem("token") || undefined;
     try {
-      const data: OpeningVsCandidate[] = await apiAction({
+      const data: any = await apiAction({
         url: `http://localhost:8000/api/openings-vs-candidate/${status}`,
         method: "GET",
         token: token,
       });
-      return data;
+
+      setStatData((prevStatData: any) => [
+        ...prevStatData,
+        { req_status: data.req_status, count: data?.count },
+      ]);
     } catch (error) {
       console.error("Error fetching opening data:", error);
     }
@@ -88,6 +98,8 @@ const Dashboard: React.FC = () => {
   const findCount = (stat: string) => {
     return statData?.find((el: any) => el.req_status === stat)?.count || 0;
   };
+
+  console.log("dsjbc", statData);
 
   return loading ? (
     <Loader />
