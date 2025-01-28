@@ -1,117 +1,107 @@
-import { BRAND } from "@/types/brand";
-import Image from "next/image";
 import DropdownDefault from "../Dropdowns/DropdownDefault";
+import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { HeaderContext } from "../Layouts/DefaultLayout";
 
-const brandData: BRAND[] = [
-  {
-    logo: "/images/brand/brand-01.svg",
-    name: "Google",
-    visitors: 3.5,
-    revenues: "5,768",
-    sales: 590,
-    conversion: 4.8,
-  },
-  {
-    logo: "/images/brand/brand-02.svg",
-    name: "Twitter",
-    visitors: 2.2,
-    revenues: "4,635",
-    sales: 467,
-    conversion: 4.3,
-  },
-  {
-    logo: "/images/brand/brand-06.svg",
-    name: "Youtube",
-    visitors: 2.1,
-    revenues: "4,290",
-    sales: 420,
-    conversion: 3.7,
-  },
-  {
-    logo: "/images/brand/brand-04.svg",
-    name: "Vimeo",
-    visitors: 1.5,
-    revenues: "3,580",
-    sales: 389,
-    conversion: 2.5,
-  },
-  {
-    logo: "/images/brand/brand-05.svg",
-    name: "Facebook",
-    visitors: 3.5,
-    revenues: "6,768",
-    sales: 390,
-    conversion: 4.2,
-  },
-];
+const TableFour = ({
+  tableName = "",
+  data = [],
+  headerData = [],
+  deleteFunc = () => {},
+}: any) => {
+  const [tableData, setTableData] = useState<any[]>();
+  const [tableHeader, setTableHeader] = useState<any[]>();
+  const router = useRouter();
+  const contextData = useContext(HeaderContext);
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-const TableFour: React.FC = () => {
+  useEffect(() => {
+    if (data.length && headerData.length) {
+      let tempHeader = headerData;
+      if (currentUser.userRole === "viewer") {
+        tempHeader.pop();
+      }
+      setTableData(data);
+      setTableHeader(tempHeader);
+    }
+  }, [data, headerData]);
+
+  useEffect(() => {
+    if (contextData.searchItem.length) {
+      const searchData: any = data?.filter((el: any) => {
+        return Object.values(el).some((value) =>
+          String(value)
+            .toLocaleLowerCase()
+            .includes(contextData.searchItem.toLocaleLowerCase()),
+        );
+      });
+      setTableData(searchData);
+    } else {
+      setTableData(data);
+    }
+  }, [contextData]);
+
+  const handleNavigation = (id: number, mode: string) => {
+    router.push(`/user/${id}?mode=${mode}`);
+  };
   return (
     <div className="col-span-12 xl:col-span-7">
       <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <div className="mb-6 flex justify-between">
           <div>
             <h4 className="text-title-sm2 font-bold text-black dark:text-white">
-              Top Channels
+              {tableName}
             </h4>
           </div>
-          <DropdownDefault />
         </div>
 
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
-            <div className="p-2.5 xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Source
-              </h5>
-            </div>
-            <div className="p-2.5 text-center xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Visitors
-              </h5>
-            </div>
-            <div className="p-2.5 text-center xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Revenues
-              </h5>
-            </div>
-            <div className="hidden p-2.5 text-center sm:block xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Conversion
-              </h5>
-            </div>
+        <div
+          className="flex flex-col"
+          style={{
+            gridTemplateColumns: `repeat(${tableHeader?.length}, minmax(150px, 1fr))`,
+            overflow: "auto",
+          }}
+        >
+          <div
+            className={`grid border-b border-stroke py-4.5 dark:border-strokedark`}
+            style={{
+              gridTemplateColumns: `repeat(${tableHeader?.length}, minmax(150px, 1fr))`,
+            }}
+          >
+            {tableHeader?.map((item: any, index: number) => (
+              <div
+                className={`break-words p-2.5 text-center xl:p-5`}
+                key={index}
+              >
+                <h5 className="text-sm font-medium uppercase xsm:text-base">
+                  {item.id
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (char: any) => char.toUpperCase())}
+                </h5>
+              </div>
+            ))}
           </div>
 
-          {brandData.map((brand, key) => (
+          {tableData?.map((client, key) => (
             <div
-              className={`grid grid-cols-3 sm:grid-cols-4 ${
-                key === brandData.length - 1
+              className={`grid text-center sm:grid-cols-5 ${
+                key === tableData.length - 1
                   ? ""
                   : "border-b border-stroke dark:border-strokedark"
               }`}
+              style={{
+                gridTemplateColumns: `repeat(${tableHeader?.length}, minmax(150px, 1fr))`,
+              }}
               key={key}
             >
-              <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                <div className="h-9 w-full max-w-9 flex-shrink-0">
-                  <Image src={brand.logo} width={60} height={50} alt="Brand" />
-                </div>
-                <p className="hidden font-medium text-black dark:text-white sm:block">
-                  {brand.name}
-                </p>
+              <div className="flex items-center justify-center p-2.5 xl:p-5">
+                <p className="text-black dark:text-white">{client.name}</p>
               </div>
 
               <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="font-medium text-black dark:text-white">
-                  {brand.visitors}K
+                <p className={client.isActive ? "text-meta-5" : "text-meta-1"}>
+                  {client.isActive ? "Active" : "Closed"}
                 </p>
-              </div>
-
-              <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="font-medium text-meta-3">${brand.revenues}</p>
-              </div>
-
-              <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <p className="font-medium text-meta-5">{brand.conversion}%</p>
               </div>
             </div>
           ))}

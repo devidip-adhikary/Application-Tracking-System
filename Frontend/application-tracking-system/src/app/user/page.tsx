@@ -12,7 +12,12 @@ const Users: React.FC = () => {
   const router = useRouter();
   const [userList, setUserList] = useState<User[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  const headerData: any[] = ["name", "email", "role", "action"];
+  const headerData: any[] = [
+    { id: "Name", value: "name" },
+    { id: "Email", value: "email" },
+    { id: "Role", value: "role" },
+    { id: "Action", value: "action" },
+  ];
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {

@@ -128,7 +128,7 @@ const TableTwo = ({
                       </button>
                       <button
                         disabled={!elem["isActive"]}
-                        className="hover:text-primary"
+                        className="text-primary"
                         onClick={() => handleNavigation(elem.id, "edit")}
                       >
                         <svg
