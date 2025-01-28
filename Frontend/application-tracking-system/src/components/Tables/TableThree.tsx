@@ -88,11 +88,13 @@ const TableThree = ({
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     id: string,
+    openingId: string,
   ) => {
     const token = localStorage.getItem("token") || undefined;
     const userObject: any = {};
     userObject["status"] = e.target?.value;
     userObject["id"] = id;
+    userObject["opening_id"] = openingId;
     try {
       setLoading(true);
       const formData = new FormData();
@@ -169,7 +171,7 @@ const TableThree = ({
               <tr key={index}>
                 {tableHeader?.map((item: any, ind: number) => (
                   <td
-                    className={`border border-b border-[#eee] border-gray-300 px-4 py-5 pl-9 dark:border-strokedark xl:pl-11 ${
+                    className={`border border-b border-[#eee] border-gray-300 px-4 py-5 pl-9 dark:border-strokedark xl:pl-11 ${elem.candidate ? (!elem.candidate.isActive ? "bg-red-300" : "") : !elem.isActive ? "bg-red-300" : ""} ${
                       ind === 0
                         ? "sticky-left" // First column
                         : ind === tableHeader.length - 1
@@ -187,16 +189,13 @@ const TableThree = ({
                         <>
                           <div className="relative z-20 bg-transparent dark:bg-form-input">
                             <select
-                              disabled={
-                                elem.candidate
-                                  ? !elem.candidate.isActive
-                                  : !elem.isActive
-                              }
-                              value={elem.status || elem.candidate.status}
+                              disabled={!elem.isActive}
+                              value={elem.status}
                               onChange={(e: any) =>
                                 handleChange(
                                   e,
-                                  elem.candidate ? elem.candidate.id : elem.id,
+                                  elem.id,
+                                  elem.opening_vs_candidates[0].id,
                                 )
                               }
                               className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
@@ -242,6 +241,7 @@ const TableThree = ({
                           {currentUser.userRole !== "viewer" ? (
                             <>
                               <button
+                                disabled={!elem.isActive}
                                 className="pe-2 hover:text-primary"
                                 onClick={() => deleteFunc(elem.id)}
                               >
@@ -250,7 +250,7 @@ const TableThree = ({
                                   width="20"
                                   height="20"
                                   viewBox="0 0 18 18"
-                                  fill="indianRed"
+                                  fill={elem.isActive ? "indianRed" : "grey"}
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
                                   <path
@@ -272,6 +272,7 @@ const TableThree = ({
                                 </svg>
                               </button>
                               <button
+                                disabled={!elem.isActive}
                                 className="hover:text-primary"
                                 onClick={() =>
                                   handleNavigation(elem.id, "edit")
@@ -280,7 +281,7 @@ const TableThree = ({
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
-                                  fill="blue"
+                                  fill={elem.isActive ? "blue" : "grey"}
                                   className="size-5"
                                 >
                                   <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />

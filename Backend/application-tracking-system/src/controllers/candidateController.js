@@ -31,9 +31,6 @@ const getCandidates = async (req, res) => {
           ],
         },
       ],
-      where: {
-        isActive: true,
-      },
     });
     res.status(200).json(users);
   } catch (error) {
@@ -61,9 +58,6 @@ const getCandidateById = async (req, res) => {
           ],
         },
       ],
-      where: {
-        isActive: true,
-      },
     });
     if (!user) {
       return res.status(404).send({ message: "User not found" });

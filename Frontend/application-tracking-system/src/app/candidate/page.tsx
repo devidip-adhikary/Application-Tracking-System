@@ -25,6 +25,7 @@ const Candidate: React.FC = () => {
     },
     { id: "Client", value: "opening_vs_candidates[0].opening.client.name" },
     { id: "Vendor", value: "vendor.name" },
+    { id: "Active Status", value: "isActive" },
     { id: "Status", value: "status_master.name" },
   ];
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
