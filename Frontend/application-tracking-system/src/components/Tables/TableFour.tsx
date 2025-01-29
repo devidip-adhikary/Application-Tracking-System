@@ -1,7 +1,7 @@
-import DropdownDefault from "../Dropdowns/DropdownDefault";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeaderContext } from "../Layouts/DefaultLayout";
+import Loader from "../common/Loader";
 
 const TableFour = ({
   tableName = "",
@@ -14,6 +14,7 @@ const TableFour = ({
   const router = useRouter();
   const contextData = useContext(HeaderContext);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (data.length && headerData.length) {
@@ -27,6 +28,7 @@ const TableFour = ({
   }, [data, headerData]);
 
   useEffect(() => {
+    setLoading(true);
     if (contextData.searchItem.length) {
       const searchData: any = data?.filter((el: any) => {
         return Object.values(el).some((value) =>
@@ -39,12 +41,15 @@ const TableFour = ({
     } else {
       setTableData(data);
     }
+    setLoading(false);
   }, [contextData]);
 
   const handleNavigation = (id: number, mode: string) => {
     router.push(`/user/${id}?mode=${mode}`);
   };
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <div className="col-span-12 xl:col-span-7">
       <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <div className="mb-6 flex justify-between">

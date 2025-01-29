@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../Layouts/DefaultLayout";
+import Loader from "../common/Loader";
 
 const TableTwo = ({
   tableName = "",
@@ -14,6 +15,7 @@ const TableTwo = ({
   const router = useRouter();
   const contextData = useContext(HeaderContext);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (data.length && headerData.length) {
@@ -27,22 +29,28 @@ const TableTwo = ({
   }, [data, headerData]);
 
   useEffect(() => {
+    setLoading(true);
     if (contextData.searchItem.length) {
-      const searchData: any = data?.filter((el: any) => {
-        return Object.values(el).some((value) =>
-          String(value)
-            .toLocaleLowerCase()
-            .includes(contextData.searchItem.toLocaleLowerCase()),
-        );
+      const searchTerm = contextData.searchItem.toLowerCase();
+      const containsSearchQuery = (value: any) => {
+        if (value && typeof value === "object") {
+          return Object.values(value).some(containsSearchQuery);
+        }
+        return String(value).toLowerCase().includes(searchTerm);
+      };
+      const filteredData = data.filter((row: any) => {
+        return Object.values(row).some((value) => containsSearchQuery(value));
       });
-      setTableData(searchData);
+      console.log("Filtered Data:", filteredData);
+      setTableData(filteredData);
     } else {
       setTableData(data);
     }
+    setLoading(false);
   }, [contextData]);
 
   const handleNavigation = (id: number, mode: string) => {
-    router.push(`/user/${id}?mode=${mode}`);
+    router.push(`/${tableName.toLowerCase()}/${id}?mode=${mode}`);
   };
 
   const getNestedValue = (obj: any, path: any) => {
@@ -56,7 +64,9 @@ const TableTwo = ({
     return element ? element.toString() : "-";
   };
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="px-4 py-6 md:px-6 xl:px-7.5">
         <h4 className="text-xl font-semibold text-black dark:text-white">

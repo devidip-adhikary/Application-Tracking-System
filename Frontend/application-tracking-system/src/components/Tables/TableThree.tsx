@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../Layouts/DefaultLayout";
 import { apiAction } from "@/utils/apiAction";
+import Loader from "../common/Loader";
 
 const TableThree = ({
   tableName = "",
@@ -51,6 +52,7 @@ const TableThree = ({
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     if (contextData.searchItem.length) {
       const searchTerm = contextData.searchItem.toLowerCase();
       const containsSearchQuery = (value: any) => {
@@ -67,6 +69,7 @@ const TableThree = ({
     } else {
       setTableData(data);
     }
+    setLoading(false);
   }, [contextData]);
 
   const router = useRouter();
@@ -137,7 +140,10 @@ const TableThree = ({
   };
 
   if (!isMounted) return null;
-  return (
+
+  return loading ? (
+    <Loader />
+  ) : (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="px-4 py-6 md:px-6 xl:px-7.5">
         <h4 className="text-xl font-semibold text-black dark:text-white">
