@@ -74,7 +74,7 @@ const AddUser: React.FC = () => {
     try {
       setLoading(true);
       const response = await apiAction({
-        url: "http://localhost:8000/api/users",
+        url: "/api/users",
         method: "POST",
         token: token,
         body: JSON.stringify(user),

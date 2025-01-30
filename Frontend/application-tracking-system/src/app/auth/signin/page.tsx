@@ -22,10 +22,7 @@ const SignIn: React.FC = () => {
 
   const login = async (auth: authModel) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/login",
-        auth,
-      );
+      const response = await axios.post("/api/auth/login", auth);
       const { name, email, role, token } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem(

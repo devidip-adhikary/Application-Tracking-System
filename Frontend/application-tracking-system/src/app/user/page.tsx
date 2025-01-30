@@ -36,7 +36,7 @@ const Users: React.FC = () => {
     }
     try {
       const data: User[] = await apiAction({
-        url: "http://localhost:8000/api/users",
+        url: "/api/users",
         method: "GET",
         token: token,
       });
@@ -55,7 +55,7 @@ const Users: React.FC = () => {
     }
     try {
       const data: User[] = await apiAction({
-        url: `http://localhost:8000/api/users/${id}`,
+        url: `/api/users/${id}`,
         method: "DELETE",
         token: token,
       });

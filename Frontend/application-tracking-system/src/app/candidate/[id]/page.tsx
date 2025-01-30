@@ -125,7 +125,7 @@ const CandidateByID: React.FC = () => {
         formData.append("resume", resume);
       }
       const response = await apiAction({
-        url: "http://localhost:8000/api/candidate",
+        url: "/api/candidate",
         method: "PUT",
         token: token,
         body: formData,
@@ -165,7 +165,7 @@ const CandidateByID: React.FC = () => {
     }
     try {
       const data: any = await apiAction({
-        url: `http://localhost:8000/api/candidate/${id}`,
+        url: `/api/candidate/${id}`,
         method: "GET",
         token: token,
       });
@@ -184,7 +184,7 @@ const CandidateByID: React.FC = () => {
     }
     try {
       const data: [] = await apiAction({
-        url: "http://localhost:8000/api/vendor",
+        url: "/api/vendor",
         method: "GET",
         token: token,
       });
@@ -202,7 +202,7 @@ const CandidateByID: React.FC = () => {
     }
     try {
       const data: [] = await apiAction({
-        url: "http://localhost:8000/api/opening",
+        url: "/api/opening",
         method: "GET",
         token: token,
       });
@@ -219,15 +219,12 @@ const CandidateByID: React.FC = () => {
       token = localStorage.getItem("token") || undefined;
     }
     try {
-      const data = await axios.get(
-        `http://localhost:8000/api/download/resume/${id}`,
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const data = await axios.get(`/api/download/resume/${id}`, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       const blob = new Blob([data.data], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);

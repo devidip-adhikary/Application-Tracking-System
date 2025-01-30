@@ -39,7 +39,7 @@ const Clients = () => {
     }
     try {
       const data: ClientsProps[] = await apiAction({
-        url: "http://localhost:8000/api/client",
+        url: "/api/client",
         method: "GET",
         token: token,
       });
@@ -74,7 +74,7 @@ const Clients = () => {
     try {
       setLoading(true);
       const response = await apiAction({
-        url: "http://localhost:8000/api/client",
+        url: "/api/client",
         method: "POST",
         token: token,
         body: JSON.stringify(name),
@@ -98,7 +98,7 @@ const Clients = () => {
     }
     try {
       const data: any = await apiAction({
-        url: `http://localhost:8000/api/client/${id}`,
+        url: `/api/client/${id}`,
         method: "DELETE",
         token: token,
       });
@@ -121,7 +121,7 @@ const Clients = () => {
     }
     try {
       const response: any = await apiAction({
-        url: `http://localhost:8000/api/client`,
+        url: `/api/client`,
         method: "PUT",
         body: JSON.stringify(data),
         token: token,

@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
     }
     try {
       const data: OpeningVsCandidate[] = await apiAction({
-        url: "http://localhost:8000/api/openings-vs-candidate",
+        url: "/api/openings-vs-candidate",
         method: "GET",
         token: token,
       });
@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
     }
     try {
       const data: any = await apiAction({
-        url: `http://localhost:8000/api/openings-vs-candidate/${status}`,
+        url: `/api/openings-vs-candidate/${status}`,
         method: "GET",
         token: token,
       });

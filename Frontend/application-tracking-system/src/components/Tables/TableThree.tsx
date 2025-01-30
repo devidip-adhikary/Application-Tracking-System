@@ -115,7 +115,7 @@ const TableThree = ({
         }
       });
       const response = await apiAction({
-        url: "http://localhost:8000/api/candidate",
+        url: "/api/candidate",
         method: "PUT",
         token: token,
         body: formData,
@@ -139,7 +139,7 @@ const TableThree = ({
     }
     try {
       const data: any[] = await apiAction({
-        url: "http://localhost:8000/api/data/status",
+        url: "/api/data/status",
         method: "GET",
         token: token,
       });

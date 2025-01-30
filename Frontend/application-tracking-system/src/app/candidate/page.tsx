@@ -46,7 +46,7 @@ const Candidate: React.FC = () => {
     }
     try {
       const data: Candidates[] = await apiAction({
-        url: "http://localhost:8000/api/candidate",
+        url: "/api/candidate",
         method: "GET",
         token: token,
       });
@@ -65,7 +65,7 @@ const Candidate: React.FC = () => {
     }
     try {
       const data: Candidates[] = await apiAction({
-        url: `http://localhost:8000/api/candidate/${id}`,
+        url: `/api/candidate/${id}`,
         method: "DELETE",
         token: token,
       });

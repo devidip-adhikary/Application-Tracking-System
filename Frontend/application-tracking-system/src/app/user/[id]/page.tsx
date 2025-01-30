@@ -63,7 +63,7 @@ const UserById: React.FC = () => {
     }
     try {
       const response: User = await apiAction({
-        url: `http://localhost:8000/api/users/${id}`,
+        url: `/api/users/${id}`,
         method: "GET",
         token: token,
       });
@@ -93,7 +93,7 @@ const UserById: React.FC = () => {
     }
     try {
       const response = await apiAction({
-        url: "http://localhost:8000/api/users",
+        url: "/api/users",
         method: "PUT",
         token: token,
         body: JSON.stringify(updatedUser),

@@ -124,7 +124,7 @@ const AddCandidate: React.FC = () => {
         formData.append("resume", resume);
       }
       const response = await apiAction({
-        url: "http://localhost:8000/api/candidate",
+        url: "/api/candidate",
         method: "POST",
         token: token,
         body: formData,
@@ -163,7 +163,7 @@ const AddCandidate: React.FC = () => {
     }
     try {
       const data: [] = await apiAction({
-        url: "http://localhost:8000/api/vendor",
+        url: "/api/vendor",
         method: "GET",
         token: token,
       });
@@ -181,7 +181,7 @@ const AddCandidate: React.FC = () => {
     }
     try {
       const data: [] = await apiAction({
-        url: "http://localhost:8000/api/opening",
+        url: "/api/opening",
         method: "GET",
         token: token,
       });
@@ -205,7 +205,7 @@ const AddCandidate: React.FC = () => {
         formData.append("resume", candidateData);
       }
       const response = await apiAction({
-        url: "http://localhost:8000/api/upload/candidate",
+        url: "/api/upload/candidate",
         method: "POST",
         token: token,
         body: formData,

@@ -68,7 +68,7 @@ const AddOpenings: React.FC = () => {
     }
     try {
       const data: Techs[] = await apiAction({
-        url: "http://localhost:8000/api/data/tech",
+        url: "/api/data/tech",
         method: "GET",
         token: token,
       });
@@ -86,7 +86,7 @@ const AddOpenings: React.FC = () => {
     }
     try {
       const data: ClientsProps[] = await apiAction({
-        url: "http://localhost:8000/api/client",
+        url: "/api/client",
         method: "GET",
         token: token,
       });
@@ -143,7 +143,7 @@ const AddOpenings: React.FC = () => {
     try {
       setLoading(true);
       const response = await apiAction({
-        url: "http://localhost:8000/api/opening",
+        url: "/api/opening",
         method: "POST",
         token: token,
         body: JSON.stringify(opening),

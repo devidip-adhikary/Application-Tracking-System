@@ -39,7 +39,7 @@ const Vendors: React.FC = () => {
     }
     try {
       const data: VendorItemProps[] = await apiAction({
-        url: "http://localhost:8000/api/vendor",
+        url: "/api/vendor",
         method: "GET",
         token: token,
       });

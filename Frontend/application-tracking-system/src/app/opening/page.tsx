@@ -44,7 +44,7 @@ const Opening: React.FC = () => {
     }
     try {
       const data: Openings[] = await apiAction({
-        url: "http://localhost:8000/api/opening",
+        url: "/api/opening",
         method: "GET",
         token: token,
       });
@@ -63,7 +63,7 @@ const Opening: React.FC = () => {
     }
     try {
       const data: Openings[] = await apiAction({
-        url: `http://localhost:8000/api/opening/${id}`,
+        url: `/api/opening/${id}`,
         method: "DELETE",
         token: token,
       });

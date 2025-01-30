@@ -20,9 +20,11 @@ export async function apiAction<T>({
   queryParams,
   cType = 'application/json'
 }: ApiRequestOptions): Promise<T> {
+  // const base_url = "http://localhost:8000";
+  const base_url = "https://application-tracking-system-b7xs.onrender.com";
   try {
     // Build the complete URL with ID and query parameters if provided
-    let fullUrl = id ? `${url}/${id}` : url;
+    let fullUrl = id ? `${base_url}${url}/${id}` : url;
     if (queryParams) {
       const queryString = new URLSearchParams(queryParams as any).toString();
       fullUrl += `?${queryString}`;
