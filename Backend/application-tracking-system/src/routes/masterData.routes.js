@@ -1,6 +1,9 @@
 const express = require("express");
 const authenticate = require("../middlewares/authenticate");
-const { getStatus } = require("../controllers/masterDataController");
+const {
+  getStatus,
+  getTechList,
+} = require("../controllers/masterDataController");
 const router = express.Router();
 
 /**
@@ -19,5 +22,22 @@ const router = express.Router();
  *       - bearerAuth: []  # This line ensures the route requires JWT authentication
  */
 router.get("/status", authenticate, getStatus);
+
+/**
+ * @swagger
+ * /api/data/tech:
+ *   get:
+ *     summary: "Get all tech stacks"
+ *     tags: [Master Data]
+ *     description: "Retrieve a list of tech stacks"
+ *     responses:
+ *       200:
+ *         description: "Successfully retrieved tech stacks"
+ *       401:
+ *         description: "Unauthorized"
+ *     security:
+ *       - bearerAuth: []  # This line ensures the route requires JWT authentication
+ */
+router.get("/tech", authenticate, getTechList);
 
 module.exports = router;

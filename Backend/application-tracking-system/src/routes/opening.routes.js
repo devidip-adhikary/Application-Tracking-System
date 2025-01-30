@@ -5,6 +5,7 @@ const {
   addOpenings,
   editOpenings,
   deleteOpening,
+  getOpeningById,
 } = require("../controllers/openingController");
 const router = express.Router();
 
@@ -24,6 +25,49 @@ const router = express.Router();
  *       - bearerAuth: []  # This line ensures the route requires JWT authentication
  */
 router.get("/", authenticate, getOpenings);
+
+/**
+ * @swagger
+ * /api/opening/{id}:
+ *   get:
+ *     summary: Fetch an opening by ID
+ *     description: Retrieves an opening based on the provided ID, including associated client and tech stack details.
+ *     tags: [Opening]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the opening to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved opening details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 client:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                 techStack:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *       404:
+ *         description: Opening not found.
+ *       500:
+ *         description: Server error.
+ */
+router.get("/:id", authenticate, getOpeningById);
 
 /**
  * @swagger

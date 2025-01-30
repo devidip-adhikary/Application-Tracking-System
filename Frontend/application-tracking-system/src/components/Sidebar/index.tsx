@@ -51,7 +51,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Openings",
-        route: "/openings",
+        route: "/opening",
       },
       {
         icon: (
@@ -77,8 +77,8 @@ const menuGroups = [
         for: "admin",
         route: "#",
         children: [
-          { label: "Vendor", route: "/vendors" },
-          { label: "Client", route: "/clients" },
+          { label: "Vendor", route: "/vendor" },
+          { label: "Client", route: "/client" },
           { label: "User", route: "/user" },
         ],
       },

@@ -1,6 +1,11 @@
 const express = require("express");
 const authenticate = require("../middlewares/authenticate");
-const { getClients } = require("../controllers/clientController");
+const {
+  getClients,
+  editClient,
+  addClients,
+  deleteClient,
+} = require("../controllers/clientController");
 const router = express.Router();
 
 /**
@@ -19,5 +24,8 @@ const router = express.Router();
  *       - bearerAuth: []  # This line ensures the route requires JWT authentication
  */
 router.get("/", authenticate, getClients);
+router.post("/", authenticate, addClients);
+router.put("/", authenticate, editClient);
+router.delete("/:id", authenticate, deleteClient);
 
 module.exports = router;

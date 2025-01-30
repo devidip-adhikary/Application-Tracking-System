@@ -18,26 +18,47 @@ const getOpenings = async (req, res) => {
   }
 };
 
+// Fetch opening by id
+const getOpeningById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const opening = await Opening.findByPk(id, {
+      include: [
+        { model: Clients, required: true },
+        { model: TechStack, required: true },
+      ],
+    });
+
+    if (!opening) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    return res.status(200).json(opening);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
 // Add a new opening
 const addOpenings = async (req, res) => {
   try {
     const {
       name,
       client,
-      tech,
+      tech_stack,
       job_description,
       location,
       number_of_requiremnts,
       work_mode,
     } = req.body;
     const opening = await Opening.findOne({
-      where: { client_id: client, tech_stack_id: tech },
+      where: { client_id: client, tech_stack_id: tech_stack },
     });
     if (opening === null) {
       const newOpening = await Opening.create({
         name: name,
         client_id: client,
-        tech_stack_id: tech,
+        tech_stack_id: tech_stack,
         job_description: job_description,
         location: location,
         number_of_requiremnts: number_of_requiremnts,
@@ -59,8 +80,8 @@ const editOpenings = async (req, res) => {
     const {
       id,
       name,
-      client,
-      tech,
+      client_id,
+      tech_stack_id,
       job_description,
       location,
       number_of_requiremnts,
@@ -69,13 +90,13 @@ const editOpenings = async (req, res) => {
 
     const [updated] = await Opening.update(
       {
-        name,
-        client,
-        tech,
-        job_description,
-        location,
-        number_of_requiremnts,
-        work_mode,
+        name: name,
+        client_id: client_id,
+        tech_stack_id: tech_stack_id,
+        job_description: job_description,
+        location: location,
+        number_of_requiremnts: number_of_requiremnts,
+        work_mode: work_mode,
       },
       { where: { id: id } }
     );
@@ -104,4 +125,10 @@ const deleteOpening = async (req, res) => {
   }
 };
 
-module.exports = { getOpenings, addOpenings, editOpenings, deleteOpening };
+module.exports = {
+  getOpenings,
+  getOpeningById,
+  addOpenings,
+  editOpenings,
+  deleteOpening,
+};

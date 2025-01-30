@@ -279,13 +279,13 @@ div::-webkit-scrollbar-thumb {
 th.sticky-left, td.sticky-left {
     position: sticky;
     left: 0;
-    background-color: #f2f5fa; /* Optional: Highlight the sticky column */
-    z-index: 1; /* Ensure it appears above other cells */
+    background-color: #f2f5fa; 
+    z-index: 1; 
   }
   
-  th.sticky-right, td.sticky-right {
+th.sticky-right, td.sticky-right {
     position: sticky;
     right: 0;
-    background-color: #f2f5fa; /* Optional: Highlight the sticky column */
-    z-index: 1; /* Ensure it appears above other cells */
+    background-color: #f2f5fa; 
+    z-index: 1; 
   }

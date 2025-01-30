@@ -4,7 +4,7 @@ import Loader from "@/components/common/Loader";
 import Notification from "@/components/common/Notification";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import SelectGroupOne from "@/components/SelectGroup/SelectGroupOne";
-import { Clients } from "@/types/brand";
+import { ClientsProps } from "@/types/brand";
 import { Openings } from "@/types/opening";
 import { Techs } from "@/types/tech";
 import { apiAction } from "@/utils/apiAction";
@@ -33,13 +33,13 @@ const AddOpenings: React.FC = () => {
   const [opening, setOpening] = useState<Openings>({
     name: "",
     client: "",
-    tech: "",
+    tech_stack: "",
     job_description: "",
     location: "",
     number_of_requiremnts: 0,
     work_mode: "",
   });
-  const [clientList, setClientList] = useState<Clients[]>([]);
+  const [clientList, setClientList] = useState<ClientsProps[]>([]);
   const [techList, setTechList] = useState<Techs[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [selectedTech, setSelectedTech] = useState<string>("");
@@ -65,7 +65,7 @@ const AddOpenings: React.FC = () => {
     const token = localStorage.getItem("token") || undefined;
     try {
       const data: Techs[] = await apiAction({
-        url: "http://localhost:8000/api/tech",
+        url: "http://localhost:8000/api/data/tech",
         method: "GET",
         token: token,
       });
@@ -79,7 +79,7 @@ const AddOpenings: React.FC = () => {
   const fetchClient = async () => {
     const token = localStorage.getItem("token") || undefined;
     try {
-      const data: Clients[] = await apiAction({
+      const data: ClientsProps[] = await apiAction({
         url: "http://localhost:8000/api/client",
         method: "GET",
         token: token,
@@ -124,7 +124,7 @@ const AddOpenings: React.FC = () => {
     e.preventDefault();
     if (
       opening.client === "" ||
-      opening.tech === "" ||
+      opening.tech_stack === "" ||
       opening.work_mode === ""
     ) {
       setError(true);
@@ -148,15 +148,15 @@ const AddOpenings: React.FC = () => {
       console.error("Error fetching user data:", error);
     }
     setLoading(false);
-    // setOpening({
-    //   name: "",
-    //   client: "",
-    //   tech: "",
-    //   job_description: "",
-    //   location: "",
-    //   number_of_requiremnts: 0,
-    //   work_mode: "",
-    // });
+    setOpening({
+      name: "",
+      client: "",
+      tech_stack: "",
+      job_description: "",
+      location: "",
+      number_of_requiremnts: 0,
+      work_mode: "",
+    });
   };
 
   return loading ? (

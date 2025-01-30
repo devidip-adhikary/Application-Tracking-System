@@ -19,8 +19,8 @@ const getUsers = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const project = await User.findOne({ where: { email: email } });
-    if (project === null) {
+    const user = await User.findOne({ where: { email: email } });
+    if (user === null) {
       const newUser = await User.create({ name, email, password, role });
       res.status(201).json(newUser);
     } else {
