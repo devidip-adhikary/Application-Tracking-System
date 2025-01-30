@@ -1,36 +1,29 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
-// Initialize Sequelize
-const sequelize = new Sequelize(
-  process.env.DB_DATABASE,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: String(process.env.DB_SERVER),
-    dialect: "mssql",
-    port: parseInt(process.env.DB_PORT) || 1433,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // Required for Render PostgreSQL
-      },
 
-      options: {
-        enableArithAbort: true,
-        encrypt: process.env.DB_ENCRYPT === "true", // Use encryption for Azure SQL Server
-        trustServerCertificate: true,
-      },
+// Initialize Sequelize with DB_URL
+const sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Required for Render PostgreSQL
     },
-  }
-);
+  },
+  logging: false, // Disable logging for cleaner console output
+});
 
 // Test the connection
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
+    console.log("✅ Connected to PostgreSQL successfully!");
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    console.error("❌ Unable to connect to the database:", error);
   }
 };
+
+// Connect to DB when the backend starts
+connectToDatabase();
 
 module.exports = { sequelize, connectToDatabase };
