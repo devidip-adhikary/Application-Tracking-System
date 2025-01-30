@@ -22,7 +22,10 @@ const SignIn: React.FC = () => {
 
   const login = async (auth: authModel) => {
     try {
-      const response = await axios.post("/api/auth/login", auth);
+      const response = await axios.post(
+        "https://application-tracking-system-b7xs.onrender.com/api/auth/login",
+        auth,
+      );
       const { name, email, role, token } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem(
@@ -83,8 +86,10 @@ const SignIn: React.FC = () => {
             </Link>
 
             <p className="2xl:px-20">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit
-              suspendisse.
+              An Application Tracking System (ATS) simplifies the process of
+              managing and organizing job applications. It tracks statuses,
+              deadlines, and application progress, helping users streamline
+              their job search and stay organized.
             </p>
 
             <span className="mt-15 inline-block">
