@@ -14,7 +14,11 @@ const TableOne = ({
   const [tableHeader, setTableHeader] = useState<any[]>();
   const router = useRouter();
   const contextData = useContext(HeaderContext);
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -31,12 +35,12 @@ const TableOne = ({
   useEffect(() => {
     setLoading(true);
     if (contextData.searchItem.length) {
-      const searchTerm = contextData.searchItem.toLowerCase();
+      const searchTerm = contextData.searchItem?.toLowerCase();
       const containsSearchQuery = (value: any) => {
         if (value && typeof value === "object") {
           return Object.values(value).some(containsSearchQuery);
         }
-        return String(value).toLowerCase().includes(searchTerm);
+        return String(value)?.toLowerCase().includes(searchTerm);
       };
       const filteredData = data.filter((row: any) => {
         return Object.values(row).some((value) => containsSearchQuery(value));

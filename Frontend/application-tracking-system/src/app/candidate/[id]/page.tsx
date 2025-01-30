@@ -41,7 +41,11 @@ const CandidateByID: React.FC = () => {
   const params = useParams();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode"); // Get 'mode' query parameter
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
 
   const showNotification = (message: string, type: string) => {
     setNotification({ message, type });
@@ -96,7 +100,10 @@ const CandidateByID: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     const userObject: any = { ...candidate };
     userObject["opening_id"] = userObject.openings[0].id;
     const updatedObj = Object.fromEntries(
@@ -152,7 +159,10 @@ const CandidateByID: React.FC = () => {
 
   const fetchCandidateDetails = async () => {
     const { id } = params;
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: any = await apiAction({
         url: `http://localhost:8000/api/candidate/${id}`,
@@ -168,7 +178,10 @@ const CandidateByID: React.FC = () => {
   };
 
   const fetchVendor = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: [] = await apiAction({
         url: "http://localhost:8000/api/vendor",
@@ -183,7 +196,10 @@ const CandidateByID: React.FC = () => {
   };
 
   const fetchOpenings = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: [] = await apiAction({
         url: "http://localhost:8000/api/opening",
@@ -198,7 +214,10 @@ const CandidateByID: React.FC = () => {
   };
 
   const downloadResume = async (id: any) => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data = await axios.get(
         `http://localhost:8000/api/download/resume/${id}`,

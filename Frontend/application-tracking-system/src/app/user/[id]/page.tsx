@@ -38,7 +38,11 @@ const UserById: React.FC = () => {
   const params = useParams();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
 
   useEffect(() => {
     fetchUserById();
@@ -53,7 +57,10 @@ const UserById: React.FC = () => {
 
   const fetchUserById = async () => {
     const { id } = params;
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const response: User = await apiAction({
         url: `http://localhost:8000/api/users/${id}`,
@@ -80,7 +87,10 @@ const UserById: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const response = await apiAction({
         url: "http://localhost:8000/api/users",

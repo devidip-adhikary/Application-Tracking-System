@@ -62,7 +62,10 @@ const AddOpenings: React.FC = () => {
     fetchTech();
   }, []);
   const fetchTech = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: Techs[] = await apiAction({
         url: "http://localhost:8000/api/data/tech",
@@ -77,7 +80,10 @@ const AddOpenings: React.FC = () => {
   };
 
   const fetchClient = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: ClientsProps[] = await apiAction({
         url: "http://localhost:8000/api/client",
@@ -130,7 +136,10 @@ const AddOpenings: React.FC = () => {
       setError(true);
       return;
     }
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       setLoading(true);
       const response = await apiAction({

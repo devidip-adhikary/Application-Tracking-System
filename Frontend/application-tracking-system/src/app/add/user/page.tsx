@@ -67,7 +67,10 @@ const AddUser: React.FC = () => {
       setError(true);
       return;
     }
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       setLoading(true);
       const response = await apiAction({

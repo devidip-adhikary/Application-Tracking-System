@@ -107,7 +107,10 @@ const AddCandidate: React.FC = () => {
       alert("Please fill the mandatory fields");
       return;
     }
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       setLoading(true);
       const formData = new FormData();
@@ -154,7 +157,10 @@ const AddCandidate: React.FC = () => {
   };
 
   const fetchVendor = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: [] = await apiAction({
         url: "http://localhost:8000/api/vendor",
@@ -169,7 +175,10 @@ const AddCandidate: React.FC = () => {
   };
 
   const fetchOpenings = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: [] = await apiAction({
         url: "http://localhost:8000/api/opening",
@@ -185,7 +194,10 @@ const AddCandidate: React.FC = () => {
   };
 
   const uploadData = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       setLoading(true);
       const formData = new FormData();

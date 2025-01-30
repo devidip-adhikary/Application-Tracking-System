@@ -28,7 +28,11 @@ const Candidate: React.FC = () => {
     { id: "Active Status", value: "isActive" },
     { id: "Status", value: "status_master.name" },
   ];
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -36,7 +40,10 @@ const Candidate: React.FC = () => {
   }, []);
 
   const fetchUser = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: Candidates[] = await apiAction({
         url: "http://localhost:8000/api/candidate",
@@ -52,7 +59,10 @@ const Candidate: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     setLoading(true);
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: Candidates[] = await apiAction({
         url: `http://localhost:8000/api/candidate/${id}`,

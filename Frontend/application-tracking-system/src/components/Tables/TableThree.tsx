@@ -19,7 +19,11 @@ const TableThree = ({
   const contextData = useContext(HeaderContext);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState<any>(null);
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
 
   const showNotification = (message: string, type: string) => {
     setNotification({ message, type });
@@ -54,12 +58,12 @@ const TableThree = ({
   useEffect(() => {
     setLoading(true);
     if (contextData.searchItem.length) {
-      const searchTerm = contextData.searchItem.toLowerCase();
+      const searchTerm = contextData.searchItem?.toLowerCase();
       const containsSearchQuery = (value: any) => {
         if (value && typeof value === "object") {
           return Object.values(value).some(containsSearchQuery);
         }
-        return String(value).toLowerCase().includes(searchTerm);
+        return String(value)?.toLowerCase().includes(searchTerm);
       };
       const filteredData = data.filter((row: any) => {
         return Object.values(row).some((value) => containsSearchQuery(value));
@@ -93,7 +97,10 @@ const TableThree = ({
     id: string,
     openingId: string,
   ) => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     const userObject: any = {};
     userObject["status"] = e.target?.value;
     userObject["id"] = id;
@@ -126,7 +133,10 @@ const TableThree = ({
   };
 
   const fetchStatus = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: any[] = await apiAction({
         url: "http://localhost:8000/api/data/status",

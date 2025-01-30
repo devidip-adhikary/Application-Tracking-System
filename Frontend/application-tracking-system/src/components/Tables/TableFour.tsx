@@ -17,7 +17,11 @@ const TableFour = ({
   const [name, setName] = useState<string>("");
   const router = useRouter();
   const contextData = useContext(HeaderContext);
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
   const [loading, setLoading] = useState<boolean>(false);
   const [mode, setMode] = useState<number>(-1);
 

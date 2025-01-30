@@ -33,7 +33,10 @@ const Clients = () => {
   }, []);
 
   const fetchCLient = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: ClientsProps[] = await apiAction({
         url: "http://localhost:8000/api/client",
@@ -64,7 +67,10 @@ const Clients = () => {
 
   const handleSubmit = async (e: React.FormEvent, name: any) => {
     e.preventDefault();
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       setLoading(true);
       const response = await apiAction({
@@ -86,7 +92,10 @@ const Clients = () => {
 
   const handleDelete = async (id: string) => {
     setLoading(true);
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: any = await apiAction({
         url: `http://localhost:8000/api/client/${id}`,
@@ -106,7 +115,10 @@ const Clients = () => {
 
   const handleUpdate = async (data: any) => {
     setLoading(true);
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const response: any = await apiAction({
         url: `http://localhost:8000/api/client`,

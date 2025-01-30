@@ -55,7 +55,10 @@ const Dashboard: React.FC = () => {
   }, [openingCandidateList?.length]);
 
   const fetchData = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: OpeningVsCandidate[] = await apiAction({
         url: "http://localhost:8000/api/openings-vs-candidate",
@@ -77,7 +80,10 @@ const Dashboard: React.FC = () => {
 
   const fetchStat = async (status: string) => {
     console.log("eh", statData, status);
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: any = await apiAction({
         url: `http://localhost:8000/api/openings-vs-candidate/${status}`,

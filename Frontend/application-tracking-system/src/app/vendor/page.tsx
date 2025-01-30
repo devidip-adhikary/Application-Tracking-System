@@ -21,7 +21,11 @@ const Vendors: React.FC = () => {
     { id: "Phone Number", value: "ph_no" },
     { id: "Status", value: "isActive" },
   ];
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  let currentUser: Record<string, any> = {};
+
+  if (typeof window !== "undefined") {
+    currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -29,7 +33,10 @@ const Vendors: React.FC = () => {
   }, []);
 
   const fetchVendor = async () => {
-    const token = localStorage.getItem("token") || undefined;
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     try {
       const data: VendorItemProps[] = await apiAction({
         url: "http://localhost:8000/api/vendor",

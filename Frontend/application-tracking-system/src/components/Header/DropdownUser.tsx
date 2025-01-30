@@ -42,7 +42,7 @@ const DropdownUser = () => {
           </span>
           <span className="block text-xs">
             {userDetails?.userRole.charAt(0).toUpperCase() +
-              userDetails?.userRole.slice(1).toLowerCase()}
+              userDetails?.userRole.slice(1)?.toLowerCase()}
           </span>
         </span>
 
