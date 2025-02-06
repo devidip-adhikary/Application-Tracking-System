@@ -49,7 +49,6 @@ const getCandidateById = async (req, res) => {
         { model: Statuses, required: true },
         {
           model: OpeningVsCandidates,
-          as: "openings",
           include: [
             {
               model: Openings,
@@ -208,8 +207,6 @@ const deleteCandidate = async (req, res) => {
   try {
     const id = req.params.id;
     const candidate = await Candidate.findByPk(id);
-    console.log("ncb", id, candidate);
-    // return;
     if (!candidate) {
       return res.status(404).send({ message: "Candidate not found" });
     }

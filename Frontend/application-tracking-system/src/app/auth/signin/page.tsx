@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loader from "@/components/common/Loader";
+import { apiAction } from "@/utils/apiAction";
 
 type authModel = {
   email: "";
@@ -22,11 +23,12 @@ const SignIn: React.FC = () => {
 
   const login = async (auth: authModel) => {
     try {
-      const response = await axios.post(
-        "https://application-tracking-system-b7xs.onrender.com/api/auth/login",
-        auth,
-      );
-      const { name, email, role, token } = response.data;
+      const response: any = await apiAction({
+        url: "/api/auth/login",
+        method: "POST",
+        body: JSON.stringify(auth),
+      });
+      const { name, email, role, token } = response;
       localStorage.setItem("token", token);
       localStorage.setItem(
         "user",
@@ -34,8 +36,8 @@ const SignIn: React.FC = () => {
       );
       router.push("/");
     } catch (error: any) {
-      console.error("Login failed:", error.response?.data || error.message);
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.error("Login failed:", error.response || error.message);
+      throw new Error(error.response?.message || "Login failed");
     }
   };
 

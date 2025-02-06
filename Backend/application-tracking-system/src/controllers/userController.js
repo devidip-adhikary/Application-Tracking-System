@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const bcrypt = require("bcrypt");
 
 // Fetch all users
 const getUsers = async (req, res) => {
@@ -50,6 +51,7 @@ const getUserById = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const { name, email, id, role, password } = req.body;
+    password = bcrypt.hash(password, 16);
     const [updated] = await User.update(
       { name, email, role, password },
       { where: { id: id } }

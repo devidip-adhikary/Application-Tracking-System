@@ -45,7 +45,6 @@ const TableOne = ({
       const filteredData = data.filter((row: any) => {
         return Object.values(row).some((value) => containsSearchQuery(value));
       });
-      console.log("Filtered Data:", filteredData);
       setTableData(filteredData);
     } else {
       setTableData(data);
@@ -53,9 +52,6 @@ const TableOne = ({
     setLoading(false);
   }, [contextData]);
 
-  const handleNavigation = (id: number, mode: string) => {
-    router.push(`/user/${id}?mode=${mode}`);
-  };
   return loading ? (
     <Loader />
   ) : (

@@ -79,7 +79,6 @@ const Dashboard: React.FC = () => {
   };
 
   const fetchStat = async (status: string) => {
-    console.log("eh", statData, status);
     let token;
     if (typeof window !== "undefined") {
       token = localStorage.getItem("token") || undefined;
@@ -104,8 +103,6 @@ const Dashboard: React.FC = () => {
   const findCount = (stat: string) => {
     return statData?.find((el: any) => el.req_status === stat)?.count || 0;
   };
-
-  console.log("dsjbc", statData);
 
   return loading ? (
     <Loader />

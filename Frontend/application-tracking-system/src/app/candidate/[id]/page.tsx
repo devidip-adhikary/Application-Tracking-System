@@ -105,7 +105,7 @@ const CandidateByID: React.FC = () => {
       token = localStorage.getItem("token") || undefined;
     }
     const userObject: any = { ...candidate };
-    userObject["opening_id"] = userObject.openings[0].id;
+    userObject["opening_id"] = userObject.opening_vs_candidates[0].id;
     const updatedObj = Object.fromEntries(
       Object.entries(userObject).filter(
         ([key]) =>
@@ -169,7 +169,7 @@ const CandidateByID: React.FC = () => {
         method: "GET",
         token: token,
       });
-      data["opening"] = data.openings[0].opening_id;
+      data["opening"] = data.opening_vs_candidates[0].opening_id;
       setCandidate(data);
     } catch (error) {
       console.error("Error fetching vendor data:", error);
@@ -219,12 +219,15 @@ const CandidateByID: React.FC = () => {
       token = localStorage.getItem("token") || undefined;
     }
     try {
-      const data = await axios.get(`/api/download/resume/${id}`, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const data = await axios.get(
+        `http://localhost:8000/api/download/resume/${id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       const blob = new Blob([data.data], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
