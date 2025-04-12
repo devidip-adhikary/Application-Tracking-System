@@ -17,24 +17,25 @@ app.use(bodyParser.json());
 // Swagger Docs
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Connect to the database
+// Connect to the database and sync models (before starting the server)
 const startServer = async () => {
-  await connectToDatabase();
+  try {
+    // Connect to the DB
+    await connectToDatabase();
 
-  await sequelize.sync({ alter: true }); // ← this line creates the tables if not exists
+    // Ensure the tables are created (this will create missing tables based on models)
+    await sequelize.sync({ alter: true }); // use `{ alter: true }` to automatically create or update tables
 
-  // Then start your server
-  app.listen(process.env.PORT || 8000, () => {
-    console.log("🚀 Server running...");
-  });
+    // Start the server only after syncing DB
+    app.listen(port || 8000, () => {
+      console.log(`🚀 Server is running at PORT ${port}`);
+    });
+  } catch (error) {
+    console.error("❌ Error starting the server:", error);
+  }
 };
 
 startServer();
 
 // Routes
 app.use("/api", routes);
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running at PORT ${port}`);
-});
