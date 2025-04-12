@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import Loader from "../common/Loader";
 import { OpeningVsCandidate } from "@/types/opening_vs_candidate";
 import { apiAction } from "@/utils/apiAction";
+import { Openings } from "@/types/opening";
 
 const Dashboard: React.FC = () => {
   const [openingCandidateList, setOpeningCandidateList] =
@@ -65,10 +66,15 @@ const Dashboard: React.FC = () => {
         method: "GET",
         token: token,
       });
+      const opening: Openings[] = await apiAction({
+        url: "/api/opening",
+        method: "GET",
+        token: token,
+      });
       let tempArr = [];
       tempArr.push({
         req_status: "Openings",
-        count: data.length,
+        count: opening.length,
       });
       setStatData(tempArr);
       setOpeningCandidateList([...data]);

@@ -261,277 +261,280 @@ const CandidateByID: React.FC = () => {
                 </h2>
               </div>
               <form onSubmit={mode !== "view" ? handleSubmit : () => {}}>
-                <div className="p-6.5">
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <SelectGroupOne
-                        title="Opening"
-                        options={openingList}
-                        displayName="name"
-                        required
-                        setSelectedValue={setSelectedOpening}
-                        selectedValue={candidate?.opening?.toString()}
-                      />
-                    </div>
+                <fieldset disabled={mode === "view"}>
+                  <div className="p-6.5">
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <SelectGroupOne
+                          title="Opening"
+                          options={openingList}
+                          displayName="name"
+                          required
+                          setSelectedValue={setSelectedOpening}
+                          selectedValue={candidate?.opening?.toString()}
+                        />
+                      </div>
 
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Name <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.name}
-                        placeholder="Enter full name"
-                        id="name"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <div className="mb-4.5">
+                      <div className="w-full xl:w-1/2">
                         <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                          Email <span className="text-meta-1">*</span>
+                          Name <span className="text-meta-1">*</span>
                         </label>
                         <input
-                          type="email"
+                          type="text"
                           onChange={handleChange}
                           required
-                          value={candidate.email}
-                          placeholder="Enter email address"
-                          id="email"
+                          value={candidate.name}
+                          placeholder="Enter full name"
+                          id="name"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <div className="mb-4.5">
+                          <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                            Email <span className="text-meta-1">*</span>
+                          </label>
+                          <input
+                            type="email"
+                            onChange={handleChange}
+                            required
+                            value={candidate.email}
+                            placeholder="Enter email address"
+                            id="email"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Phone <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.ph_no}
+                          placeholder="Enter phone number"
+                          id="ph_no"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <SelectGroupOne
+                          title="Vendor"
+                          options={vendorList}
+                          displayName="name"
+                          required
+                          setSelectedValue={setSelectedVendor}
+                          selectedValue={candidate.vendor_id.toString()}
+                        />
+                      </div>
+                      <div className="w-full xl:w-1/2">
+                        <div>
+                          <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                            Upload Resume
+                          </label>
+                          <input
+                            type="file"
+                            onChange={handleFileChange}
+                            id="resume"
+                            className={`${candidate?.resume ? "w-99" : "w-full"} cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary`}
+                          />
+                          {candidate?.resume && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="mx-2 inline size-6"
+                              onClick={() => downloadResume(candidate?.id)}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Current Company <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.current_company}
+                          placeholder="Enter Current Company"
+                          id="current_company"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Notice Period <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.notice_period}
+                          placeholder="Enter Notice Period"
+                          id="notice_period"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </div>
                     </div>
 
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Phone <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.ph_no}
-                        placeholder="Enter phone number"
-                        id="ph_no"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <SelectGroupOne
-                        title="Vendor"
-                        options={vendorList}
-                        displayName="name"
-                        required
-                        setSelectedValue={setSelectedVendor}
-                        selectedValue={candidate.vendor_id.toString()}
-                      />
-                    </div>
-                    <div className="w-full xl:w-1/2">
-                      <div>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="mt-2 w-full xl:w-1/2">
                         <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                          Upload Resume
+                          Served NP? <span className="text-meta-1">*</span>
+                        </label>
+                        <SwitcherThree
+                          setValue={setIsServedNP}
+                          checked={candidate.lwd !== null ? true : false}
+                        />
+                      </div>
+                      <div className="w-full xl:w-1/2">
+                        <DatePickerOne
+                          name="LWD"
+                          setValue={setSelectedLWD}
+                          isDisabled={isServedNP}
+                          value={candidate?.lwd || selectedLWD}
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Years of Experience{" "}
+                          <span className="text-meta-1">*</span>
                         </label>
                         <input
-                          type="file"
-                          onChange={handleFileChange}
-                          id="resume"
-                          className={`${candidate?.resume ? "w-99" : "w-full"} cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary`}
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.YOE}
+                          placeholder="Enter Years of Experience"
+                          id="YOE"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
-                        {candidate?.resume && (
+                      </div>
+
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Relevent Years of Experience{" "}
+                          <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.RYOE}
+                          placeholder="Enter Relevent Years of Experience"
+                          id="RYOE"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Current Location{" "}
+                          <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.cur_location}
+                          placeholder="Enter Current Location"
+                          id="cur_location"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          Preferred Location{" "}
+                          <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.pref_location}
+                          placeholder="Enter Relevent Years of Experience"
+                          id="pref_location"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          CTC <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.current_ctc}
+                          placeholder="Enter Current Location"
+                          id="current_ctc"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+
+                      <div className="w-full xl:w-1/2">
+                        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                          ECTC <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          onChange={handleChange}
+                          required
+                          value={candidate.expected_ctc}
+                          placeholder="Enter Relevent Years of Experience"
+                          id="expected_ctc"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    <span className="float-right">
+                      {mode !== "view" && (
+                        <button
+                          type="submit"
+                          className="mb-4 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                        >
+                          <span className="pe-2">Update</span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="mx-2 inline size-6"
-                            onClick={() => downloadResume(candidate?.id)}
+                            className="size-6"
                           >
-                            <path
-                              fillRule="evenodd"
-                              d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                              clipRule="evenodd"
-                            />
+                            <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
                           </svg>
-                        )}
-                      </div>
-                    </div>
+                        </button>
+                      )}
+                    </span>
                   </div>
-
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Current Company <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.current_company}
-                        placeholder="Enter Current Company"
-                        id="current_company"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Notice Period <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.notice_period}
-                        placeholder="Enter Notice Period"
-                        id="notice_period"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="mt-2 w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Served NP? <span className="text-meta-1">*</span>
-                      </label>
-                      <SwitcherThree
-                        setValue={setIsServedNP}
-                        checked={candidate.lwd !== null ? true : false}
-                      />
-                    </div>
-                    <div className="w-full xl:w-1/2">
-                      <DatePickerOne
-                        name="LWD"
-                        setValue={setSelectedLWD}
-                        isDisabled={isServedNP}
-                        value={candidate?.lwd || selectedLWD}
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Years of Experience{" "}
-                        <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.YOE}
-                        placeholder="Enter Years of Experience"
-                        id="YOE"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Relevent Years of Experience{" "}
-                        <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.RYOE}
-                        placeholder="Enter Relevent Years of Experience"
-                        id="RYOE"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Current Location <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.cur_location}
-                        placeholder="Enter Current Location"
-                        id="cur_location"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        Preferred Location{" "}
-                        <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.pref_location}
-                        placeholder="Enter Relevent Years of Experience"
-                        id="pref_location"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        CTC <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.current_ctc}
-                        placeholder="Enter Current Location"
-                        id="current_ctc"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                        ECTC <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={handleChange}
-                        required
-                        value={candidate.expected_ctc}
-                        placeholder="Enter Relevent Years of Experience"
-                        id="expected_ctc"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <span className="float-right">
-                    {mode !== "view" && (
-                      <button
-                        type="submit"
-                        className="mb-4 flex w-max justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-                      >
-                        <span className="pe-2">Update</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-6"
-                        >
-                          <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-                        </svg>
-                      </button>
-                    )}
-                  </span>
-                </div>
+                </fieldset>
               </form>
             </div>
           </div>
