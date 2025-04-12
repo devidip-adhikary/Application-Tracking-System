@@ -82,7 +82,7 @@ const Candidates = sequelize.define(
     status: {
       type: DataTypes.STRING,
       references: {
-        model: "status",
+        model: "status_master",
         key: "id",
       },
     },
