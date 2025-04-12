@@ -12,7 +12,8 @@ const port = process.env.PORT;
 app.use(cors());
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Swagger Docs
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
