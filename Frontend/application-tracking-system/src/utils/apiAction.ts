@@ -21,7 +21,7 @@ export async function apiAction<T>({
   cType = 'application/json'
 }: ApiRequestOptions): Promise<T> {
   // const base_url = "http://localhost:8000";
-  const base_url = "https://application-tracking-system-production-7de8.up.railway.app/";
+  const base_url = "https://application-tracking-system-production-7de8.up.railway.app";
   try {
     // Build the complete URL with ID and query parameters if provided
     let fullUrl = id ? `${base_url}${url}/${id}` : `${base_url}${url}`;
