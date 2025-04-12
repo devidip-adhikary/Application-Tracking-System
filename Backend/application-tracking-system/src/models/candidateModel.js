@@ -80,11 +80,8 @@ const Candidates = sequelize.define(
       defaultValue: true,
     },
     status: {
-      type: DataTypes.STRING,
-      references: {
-        model: "status_master",
-        key: "id",
-      },
+      type: DataTypes.INTEGER,
+      references: { model: "status_master", key: "id" },
     },
   },
   {
