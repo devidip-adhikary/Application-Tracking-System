@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swaggerDefinition");
-const { connectToDatabase } = require("./config/db");
+const { connectToDatabase, sequelize } = require("./config/db");
 const routes = require("./routes/routes");
 
 const app = express();
