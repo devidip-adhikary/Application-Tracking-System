@@ -18,7 +18,18 @@ app.use(bodyParser.json());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Connect to the database
-connectToDatabase();
+const startServer = async () => {
+  await connectToDatabase();
+
+  await sequelize.sync({ alter: true }); // ← this line creates the tables if not exists
+
+  // Then start your server
+  app.listen(process.env.PORT || 8000, () => {
+    console.log("🚀 Server running...");
+  });
+};
+
+startServer();
 
 // Routes
 app.use("/api", routes);
